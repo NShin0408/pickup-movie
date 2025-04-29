@@ -17,6 +17,10 @@ class TMDBService
 
     public function searchMovies(string $query): array
     {
+        if (empty($query)) {
+            return [];
+        }
+
         $response = Http::get("{$this->baseUrl}/search/movie", [
             'api_key' => $this->apiKey,
             'language' => $this->language,
@@ -30,8 +34,10 @@ class TMDBService
     {
         $defaultOptions = [
             'sort_by' => 'popularity.desc',
-            'year' => 2024,
-            'with_original_language' => 'ja',
+            'year' => date('Y'),
+            'include_adult' => false,
+            'with_original_language' => 'ja', // 日本語映画をデフォルトで表示
+            'page' => 1, // 1ページ目
         ];
 
         $params = array_merge($defaultOptions, $options, [
@@ -42,5 +48,6 @@ class TMDBService
         $response = Http::get("{$this->baseUrl}/discover/movie", $params);
 
         return $response->json()['results'] ?? [];
+
     }
 }
