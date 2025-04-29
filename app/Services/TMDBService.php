@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+
+class TMDBService
+{
+    protected string $apiKey;
+    protected string $baseUrl = 'https://api.themoviedb.org/3';
+    protected string $language = 'ja-JP';
+
+    public function __construct()
+    {
+        $this->apiKey = config('services.tmdb.api_key');
+    }
+
+    public function searchMovies(string $query): array
+    {
+        $response = Http::get("{$this->baseUrl}/search/movie", [
+            'api_key' => $this->apiKey,
+            'language' => $this->language,
+            'query' => $query,
+        ]);
+
+        return $response->json()['results'] ?? [];
+    }
+
+    public function discoverMovies(array $options = []): array
+    {
+        $defaultOptions = [
+            'sort_by' => 'popularity.desc',
+            'year' => 2024,
+            'with_original_language' => 'ja',
+        ];
+
+        $params = array_merge($defaultOptions, $options, [
+            'api_key' => $this->apiKey,
+            'language' => $this->language,
+        ]);
+
+        $response = Http::get("{$this->baseUrl}/discover/movie", $params);
+
+        return $response->json()['results'] ?? [];
+    }
+}
