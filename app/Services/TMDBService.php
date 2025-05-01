@@ -106,8 +106,10 @@ class TMDBService
         ];
 
         $response = Http::get("{$this->baseUrl}/movie/popular", $params);
+        $results = $response->json()['results'] ?? [];
 
-        return $response->json()['results'] ?? [];
+        // ポスターがある映画のみをフィルタリングし、最低20件確保
+        return $this->filterAndEnsureMovieCount($results);
     }
 
     public function getTopRatedMovies(?string $selectedLanguage = null, ?string $streamingService = null): array
@@ -139,8 +141,10 @@ class TMDBService
         ];
 
         $response = Http::get("{$this->baseUrl}/movie/top_rated", $params);
+        $results = $response->json()['results'] ?? [];
 
-        return $response->json()['results'] ?? [];
+        // ポスターがある映画のみをフィルタリングし、最低20件確保
+        return $this->filterAndEnsureMovieCount($results);
     }
 
     public function getNowPlayingMovies(?string $selectedLanguage = null, ?string $streamingService = null): array
@@ -178,8 +182,10 @@ class TMDBService
         ];
 
         $response = Http::get("{$this->baseUrl}/movie/now_playing", $params);
+        $results = $response->json()['results'] ?? [];
 
-        return $response->json()['results'] ?? [];
+        // ポスターがある映画のみをフィルタリングし、最低20件確保
+        return $this->filterAndEnsureMovieCount($results);
     }
 
     public function discoverMovies(array $options = [], array $langParams = [], ?string $streamingService = null): array
@@ -208,9 +214,83 @@ class TMDBService
             $params['watch_region'] = $this->defaultRegion; // 日本国内での配信状況
         }
 
+        // 最初は1ページ目を取得
         $response = Http::get("{$this->baseUrl}/discover/movie", $params);
+        $results = $response->json()['results'] ?? [];
 
-        return $response->json()['results'] ?? [];
+        // ポスターがある映画だけをフィルタリング
+        $filteredResults = array_filter($results, function($movie) {
+            return !empty($movie['poster_path']);
+        });
+
+        // もし十分な結果が得られなかった場合、2ページ目も取得
+        if (count($filteredResults) < 20 && isset($response->json()['total_pages']) && $response->json()['total_pages'] > 1) {
+            $params['page'] = 2;
+            $page2Response = Http::get("{$this->baseUrl}/discover/movie", $params);
+            $page2Results = $page2Response->json()['results'] ?? [];
+
+            // ポスターがある映画だけをフィルタリング
+            $filteredPage2Results = array_filter($page2Results, function($movie) {
+                return !empty($movie['poster_path']);
+            });
+
+            // 結果を結合
+            $filteredResults = array_merge($filteredResults, $filteredPage2Results);
+
+            // 必要に応じて3ページ目も取得
+            if (count($filteredResults) < 20 && isset($page2Response->json()['total_pages']) && $page2Response->json()['total_pages'] > 2) {
+                $params['page'] = 3;
+                $page3Response = Http::get("{$this->baseUrl}/discover/movie", $params);
+                $page3Results = $page3Response->json()['results'] ?? [];
+
+                // ポスターがある映画だけをフィルタリング
+                $filteredPage3Results = array_filter($page3Results, function($movie) {
+                    return !empty($movie['poster_path']);
+                });
+
+                // 結果を結合
+                $filteredResults = array_merge($filteredResults, $filteredPage3Results);
+            }
+        }
+
+        // 最初の20件に制限
+        return array_slice(array_values($filteredResults), 0, 20);
+    }
+
+    /**
+     * ポスターがある映画だけをフィルタリングし、必要に応じて追加のページを取得して
+     * 常に最低20件の映画を確保する
+     */
+    private function filterAndEnsureMovieCount(array $results): array
+    {
+        // ポスターがある映画だけをフィルタリング
+        $filteredResults = array_filter($results, function($movie) {
+            return !empty($movie['poster_path']);
+        });
+
+        // 映画が20件未満の場合、2ページ目も取得
+        if (count($filteredResults) < 20) {
+            $params = [
+                'api_key' => $this->apiKey,
+                'language' => $this->defaultLanguage,
+                'page' => 2,
+                'include_adult' => false,
+            ];
+
+            $response = Http::get("{$this->baseUrl}/movie/popular", $params);
+            $page2Results = $response->json()['results'] ?? [];
+
+            // ポスターがある映画だけを追加
+            $filteredPage2Results = array_filter($page2Results, function($movie) {
+                return !empty($movie['poster_path']);
+            });
+
+            // 結果を結合
+            $filteredResults = array_merge($filteredResults, $filteredPage2Results);
+        }
+
+        // 最初の20件に制限
+        return array_slice(array_values($filteredResults), 0, 20);
     }
 
     /**
