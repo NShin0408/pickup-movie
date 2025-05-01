@@ -36,4 +36,22 @@ class MovieController extends Controller
         ]);
     }
 
+    public function loadMore(Request $request)
+    {
+        $category = $request->query('category', 'popular');
+        $language = $request->query('language', 'all');
+        $streamingService = $request->query('streaming', 'all');
+        $page = (int)$request->query('page', 2); // デフォルトは2ページ目から
+
+        $movies = match ($category) {
+            'top_rated' => $this->tmdbService->getTopRatedMovies($language, $streamingService, $page),
+            'now_playing' => $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page),
+            default => $this->tmdbService->getPopularMovies($language, $streamingService, $page),
+        };
+
+        return response()->json([
+            'movies' => $movies,
+            'hasMore' => count($movies) == 20, // 20件取得できたら、まだ次のページがある
+        ]);
+    }
 }

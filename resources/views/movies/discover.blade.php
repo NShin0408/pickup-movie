@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>映画リスト</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         html {
             overflow-y: scroll; /* 常にスクロールバーを表示して、幅の変化を防ぐ */
@@ -162,17 +163,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* シャドウを強調 */
         }
 
-        .placeholder {
-            width: 100%;
-            aspect-ratio: 2/3;
-            background-color: #333;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.3);
-        }
-
         .movie-title {
             position: absolute;
             bottom: 0;
@@ -203,6 +193,43 @@
             border-radius: 8px;
         }
 
+        .loading {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .load-more-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        .load-more-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
         .attribution {
             width: 100%;
             font-size: 12px;
@@ -220,90 +247,191 @@
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="header">
-            <h1>映画リスト</h1>
-        </div>
+<div class="main-container">
+    <div class="header">
+        <h1>映画リスト</h1>
+    </div>
 
-        <div class="filters-wrapper">
-            <div class="filters-container">
-                <div class="filters">
-                    <div class="filter-section">
-                        <div class="filter-title">カテゴリー</div>
-                        <div class="filter-options">
-                            <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'popular' ? 'active' : '' }}">
-                                人気
-                            </a>
-                            <a href="/?category=top_rated&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'top_rated' ? 'active' : '' }}">
-                                高評価
-                            </a>
-                            <a href="/?category=now_playing&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'now_playing' ? 'active' : '' }}">
-                                上映中
-                            </a>
-                        </div>
+    <div class="filters-wrapper">
+        <div class="filters-container">
+            <div class="filters">
+                <div class="filter-section">
+                    <div class="filter-title">カテゴリー</div>
+                    <div class="filter-options">
+                        <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'popular' ? 'active' : '' }}">
+                            人気
+                        </a>
+                        <a href="/?category=top_rated&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'top_rated' ? 'active' : '' }}">
+                            高評価
+                        </a>
+                        <a href="/?category=now_playing&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'now_playing' ? 'active' : '' }}">
+                            上映中
+                        </a>
                     </div>
+                </div>
 
-                    <div class="filter-section">
-                        <div class="filter-title">言語</div>
-                        <div class="filter-options">
-                            @foreach ($languages as $code => $name)
-                                <a href="/?category={{ $currentCategory }}&language={{ $code }}&streaming={{ $currentStreaming }}"
-                                   class="language-option {{ $currentLanguage === $code ? 'active' : '' }}">
-                                    {{ $name }}
-                                </a>
-                            @endforeach
-                        </div>
+                <div class="filter-section">
+                    <div class="filter-title">言語</div>
+                    <div class="filter-options">
+                        @foreach ($languages as $code => $name)
+                            <a href="/?category={{ $currentCategory }}&language={{ $code }}&streaming={{ $currentStreaming }}"
+                               class="language-option {{ $currentLanguage === $code ? 'active' : '' }}">
+                                {{ $name }}
+                            </a>
+                        @endforeach
                     </div>
+                </div>
 
-                    <div class="filter-section">
-                        <div class="filter-title">配信サービス</div>
-                        <div class="filter-options">
-                            @foreach ($streamingServices as $id => $name)
-                                <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
-                                   class="streaming-option {{ (string)$currentStreaming === (string)$id ? 'active' : '' }}">
-                                    {{ $name }}
-                                </a>
-                            @endforeach
-                        </div>
+                <div class="filter-section">
+                    <div class="filter-title">配信サービス</div>
+                    <div class="filter-options">
+                        @foreach ($streamingServices as $id => $name)
+                            <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
+                               class="streaming-option {{ (string)$currentStreaming === (string)$id ? 'active' : '' }}">
+                                {{ $name }}
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="content-wrapper">
-            <div class="content-container">
-                @if(count($movies) > 0)
-                    <div class="movie-grid">
-                        @foreach ($movies as $movie)
+    <div class="content-wrapper">
+        <div class="content-container">
+            @if(count($movies) > 0)
+                <div class="movie-grid" id="movie-grid">
+                    @foreach ($movies as $movie)
+                        @if($movie['poster_path'])
                             <div class="movie-item">
-                                @if($movie['poster_path'])
-                                    <img
-                                        src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
-                                        alt="{{ $movie['title'] }}"
-                                        class="movie-poster"
-                                        loading="lazy"
-                                    >
-                                @else
-                                    <div class="placeholder" title="{{ $movie['title'] }}">
-                                        画像なし
-                                    </div>
-                                @endif
+                                <img
+                                    src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
+                                    alt="{{ $movie['title'] }}"
+                                    class="movie-poster"
+                                    loading="lazy"
+                                >
                                 <div class="movie-title">{{ $movie['title'] }}</div>
                             </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="no-results">
-                        <p>条件に一致する映画が見つかりませんでした</p>
-                    </div>
-                @endif
-            </div>
-        </div>
+                        @endif
+                    @endforeach
+                </div>
 
-        <div class="attribution">
-            映画情報提供元: TMDb<br>
-            配信情報提供元: JustWatch
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                </div>
+
+                <button class="load-more-btn" id="load-more-btn">もっと見る</button>
+            @else
+                <div class="no-results">
+                    <p>条件に一致する映画が見つかりませんでした</p>
+                </div>
+            @endif
         </div>
     </div>
+
+    <div class="attribution">
+        映画情報提供元: TMDb<br>
+        配信情報提供元: JustWatch
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMore = true;
+
+        const category = '{{ $currentCategory }}';
+        const language = '{{ $currentLanguage }}';
+        const streaming = '{{ $currentStreaming }}';
+
+        $('#load-more-btn').click(function() {
+            if (isLoading) return;
+            loadMoreMovies();
+        });
+
+        function loadMoreMovies() {
+            if (isLoading || !hasMore) return;
+
+            isLoading = true;
+            currentPage++;
+
+            // ローディング表示
+            $('#loading').show();
+            $('#load-more-btn').hide();
+
+            // Ajaxリクエスト
+            $.ajax({
+                url: '/load-more',
+                type: 'GET',
+                data: {
+                    category: category,
+                    language: language,
+                    streaming: streaming,
+                    page: currentPage
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log('Data received:', data);
+
+                    if (data.movies && data.movies.length > 0) {
+                        // 映画を追加
+                        $.each(data.movies, function(index, movie) {
+                            if (movie.poster_path) {
+                                const movieItem = `
+                                        <div class="movie-item">
+                                            <img
+                                                src="https://image.tmdb.org/t/p/w342${movie.poster_path}"
+                                                alt="${movie.title}"
+                                                class="movie-poster"
+                                                loading="lazy"
+                                            >
+                                            <div class="movie-title">${movie.title}</div>
+                                        </div>
+                                    `;
+                                $('#movie-grid').append(movieItem);
+                            }
+                        });
+
+                        hasMore = data.hasMore;
+                    } else {
+                        hasMore = false;
+                    }
+
+                    // ローディング非表示
+                    $('#loading').hide();
+
+                    // もっと見るボタンの表示/非表示
+                    if (hasMore) {
+                        $('#load-more-btn').show();
+                    } else {
+                        $('#load-more-btn').hide();
+                    }
+
+                    isLoading = false;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading more movies:', error);
+                    console.log('XHR:', xhr);
+
+                    // エラー時もローディング非表示
+                    $('#loading').hide();
+                    $('#load-more-btn').show();
+                    isLoading = false;
+                }
+            });
+        }
+
+        // スクロールイベント
+        $(window).scroll(function() {
+            if (isLoading || !hasMore) return;
+
+            // ページ下部に到達したかチェック
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+                loadMoreMovies();
+            }
+        });
+    });
+</script>
 </body>
 </html>
