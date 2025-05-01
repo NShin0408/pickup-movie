@@ -19,13 +19,41 @@
         }
 
         .header {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding: 0 10px;
+            text-align: center;
         }
 
         .header h1 {
             font-size: 24px;
             font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .category-tab:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .category-tab.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
         }
 
         .movie-grid {
@@ -69,12 +97,28 @@
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
                 gap: 10px;
             }
+
+            .category-tabs {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
 <div class="header">
     <h1>映画リスト</h1>
+
+    <div class="category-tabs">
+        <a href="/?category=popular" class="category-tab {{ $currentCategory === 'popular' ? 'active' : '' }}">
+            人気
+        </a>
+        <a href="/?category=top_rated" class="category-tab {{ $currentCategory === 'top_rated' ? 'active' : '' }}">
+            高評価
+        </a>
+        <a href="/?category=now_playing" class="category-tab {{ $currentCategory === 'now_playing' ? 'active' : '' }}">
+            上映中
+        </a>
+    </div>
 </div>
 
 <div class="movie-grid">

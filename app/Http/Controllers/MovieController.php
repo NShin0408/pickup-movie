@@ -16,15 +16,18 @@ class MovieController extends Controller
 
     public function discover(Request $request)
     {
-        $options = [];
+        $category = $request->query('category', 'popular');
 
-        // リクエストからフィルターオプションを取得できるようにする（オプション）
-        if ($request->has('year')) {
-            $options['year'] = $request->query('year');
-        }
+        $movies = match ($category) {
+            'top_rated' => $this->tmdbService->getTopRatedMovies(),
+            'now_playing' => $this->tmdbService->getNowPlayingMovies(),
+            default => $this->tmdbService->getPopularMovies(),
+        };
 
-        $movies = $this->tmdbService->discoverMovies($options);
+        return view('movies.discover', [
+            'movies' => $movies,
+            'currentCategory' => $category
+        ]);
 
-        return view('movies.discover', ['movies' => $movies]);
     }
 }

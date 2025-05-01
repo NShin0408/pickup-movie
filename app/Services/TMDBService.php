@@ -15,21 +15,6 @@ class TMDBService
         $this->apiKey = config('services.tmdb.api_key');
     }
 
-    public function searchMovies(string $query): array
-    {
-        if (empty($query)) {
-            return [];
-        }
-
-        $response = Http::get("{$this->baseUrl}/search/movie", [
-            'api_key' => $this->apiKey,
-            'language' => $this->language,
-            'query' => $query,
-        ]);
-
-        return $response->json()['results'] ?? [];
-    }
-
     public function discoverMovies(array $options = []): array
     {
         $defaultOptions = [
@@ -48,6 +33,44 @@ class TMDBService
         $response = Http::get("{$this->baseUrl}/discover/movie", $params);
 
         return $response->json()['results'] ?? [];
+    }
 
+    public function getPopularMovies(): array
+    {
+        $params = [
+            'api_key' => $this->apiKey,
+            'language' => $this->language,
+            'page' => 1,
+        ];
+
+        $response = Http::get("{$this->baseUrl}/movie/popular", $params);
+
+        return $response->json()['results'] ?? [];
+    }
+
+    public function getTopRatedMovies(): array
+    {
+        $params = [
+            'api_key' => $this->apiKey,
+            'language' => $this->language,
+            'page' => 1,
+        ];
+
+        $response = Http::get("{$this->baseUrl}/movie/top_rated", $params);
+
+        return $response->json()['results'] ?? [];
+    }
+
+    public function getNowPlayingMovies(): array
+    {
+        $params = [
+            'api_key' => $this->apiKey,
+            'language' => $this->language,
+            'page' => 1,
+        ];
+
+        $response = Http::get("{$this->baseUrl}/movie/now_playing", $params);
+
+        return $response->json()['results'] ?? [];
     }
 }
