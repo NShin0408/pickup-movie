@@ -14,14 +14,6 @@ class MovieController extends Controller
         $this->tmdbService = $tmdbService;
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->query('query');
-        $movies = $this->tmdbService->searchMovies($query);
-
-        return view('movies.index', ['movies' => $movies]);
-    }
-
     public function discover(Request $request)
     {
         $options = [];

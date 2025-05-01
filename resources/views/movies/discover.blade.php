@@ -19,9 +19,6 @@
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 30px;
             padding: 0 10px;
         }
@@ -29,26 +26,6 @@
         .header h1 {
             font-size: 24px;
             font-weight: 500;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-        }
-
-        .search-input {
-            background-color: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            padding: 8px 12px;
-            font-size: 14px;
-            outline: none;
-            width: 250px;
-        }
-
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
         }
 
         .movie-grid {
@@ -92,48 +69,31 @@
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
                 gap: 10px;
             }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .search-form {
-                width: 100%;
-            }
-
-            .search-input {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>映画リスト</h1>
-        <form action="/movies" method="GET" class="search-form">
-            <input type="text" name="query" placeholder="映画を検索..." class="search-input">
-        </form>
-    </div>
+<div class="header">
+    <h1>映画リスト</h1>
+</div>
 
-    <div class="movie-grid">
-        @foreach ($movies as $movie)
-            <div class="movie-item">
-                @if($movie['poster_path'])
-                    <img
-                        src="https://image.tmdb.org/t/p/w300{{ $movie['poster_path'] }}"
-                        alt="{{ $movie['title'] }}"
-                        class="movie-poster"
-                        title="{{ $movie['title'] }}"
-                    >
-                @else
-                    <div class="placeholder" title="{{ $movie['title'] }}">
-                        画像なし
-                    </div>
-                @endif
-            </div>
-        @endforeach
-    </div>
+<div class="movie-grid">
+    @foreach ($movies as $movie)
+        <div class="movie-item">
+            @if($movie['poster_path'])
+                <img
+                    src="https://image.tmdb.org/t/p/w300{{ $movie['poster_path'] }}"
+                    alt="{{ $movie['title'] }}"
+                    class="movie-poster"
+                    title="{{ $movie['title'] }}"
+                >
+            @else
+                <div class="placeholder" title="{{ $movie['title'] }}">
+                    画像なし
+                </div>
+            @endif
+        </div>
+    @endforeach
+</div>
 </body>
 </html>
