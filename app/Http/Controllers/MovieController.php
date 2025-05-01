@@ -18,18 +18,22 @@ class MovieController extends Controller
     {
         $category = $request->query('category', 'popular');
         $language = $request->query('language', 'all');
+        $streamingService = $request->query('streaming', 'all');
 
         $movies = match ($category) {
-            'top_rated' => $this->tmdbService->getTopRatedMovies($language),
-            'now_playing' => $this->tmdbService->getNowPlayingMovies($language),
-            default => $this->tmdbService->getPopularMovies($language),
+            'top_rated' => $this->tmdbService->getTopRatedMovies($language, $streamingService),
+            'now_playing' => $this->tmdbService->getNowPlayingMovies($language, $streamingService),
+            default => $this->tmdbService->getPopularMovies($language, $streamingService),
         };
 
         return view('movies.discover', [
             'movies' => $movies,
             'currentCategory' => $category,
             'currentLanguage' => $language,
-            'languages' => TMDBService::$languages
+            'currentStreaming' => $streamingService,
+            'languages' => TMDBService::$languages,
+            'streamingServices' => TMDBService::$streamingServices
         ]);
     }
+
 }
