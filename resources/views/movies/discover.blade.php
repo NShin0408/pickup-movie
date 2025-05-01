@@ -69,8 +69,7 @@
         }
 
         .category-tab.active {
-            background-color: rgba(255, 255, 255, 0.3);
-            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.4); /* より白っぽい背景 */
         }
 
         .language-filter, .streaming-filter {
@@ -95,8 +94,7 @@
         }
 
         .language-option.active, .streaming-option.active {
-            background-color: rgba(255, 255, 255, 0.3);
-            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.4); /* より白っぽい背景 */
         }
 
         .movie-grid {
@@ -209,7 +207,7 @@
             <div class="streaming-filter">
                 @foreach ($streamingServices as $id => $name)
                     <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
-                       class="streaming-option {{ $currentStreaming === $id ? 'active' : '' }}">
+                       class="streaming-option {{ (string)$currentStreaming === (string)$id ? 'active' : '' }}">
                         {{ $name }}
                     </a>
                 @endforeach
