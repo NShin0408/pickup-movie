@@ -139,8 +139,8 @@
 
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 画像サイズを大きく */
+            gap: 20px; /* 間隔も少し広げる */
             width: 100%;
         }
 
@@ -158,15 +158,15 @@
             width: 100%;
             aspect-ratio: 2/3;
             object-fit: cover;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 6px; /* 角を少し丸く */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* シャドウを強調 */
         }
 
         .placeholder {
             width: 100%;
             aspect-ratio: 2/3;
             background-color: #333;
-            border-radius: 4px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -178,11 +178,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 8px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 10px; /* パディングを増やす */
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9)); /* グラデーションを強く */
             color: #fff;
-            font-size: 12px;
-            border-radius: 0 0 4px 4px;
+            font-size: 13px; /* フォントサイズを少し大きく */
+            border-radius: 0 0 6px 6px;
             opacity: 0;
             transition: opacity 0.2s ease;
         }
@@ -203,21 +203,6 @@
             border-radius: 8px;
         }
 
-        .reset-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: rgba(61, 164, 255, 0.8);
-            text-decoration: none;
-            padding: 6px 12px;
-            border: 1px solid rgba(61, 164, 255, 0.4);
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .reset-link:hover {
-            background-color: rgba(61, 164, 255, 0.1);
-        }
-
         .attribution {
             width: 100%;
             font-size: 12px;
@@ -228,98 +213,97 @@
 
         @media (max-width: 768px) {
             .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* モバイルでも少し大きく */
+                gap: 15px;
             }
         }
     </style>
 </head>
 <body>
-<div class="main-container">
-    <div class="header">
-        <h1>映画リスト</h1>
-    </div>
+    <div class="main-container">
+        <div class="header">
+            <h1>映画リスト</h1>
+        </div>
 
-    <div class="filters-wrapper">
-        <div class="filters-container">
-            <div class="filters">
-                <div class="filter-section">
-                    <div class="filter-title">カテゴリー</div>
-                    <div class="filter-options">
-                        <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'popular' ? 'active' : '' }}">
-                            人気
-                        </a>
-                        <a href="/?category=top_rated&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'top_rated' ? 'active' : '' }}">
-                            高評価
-                        </a>
-                        <a href="/?category=now_playing&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'now_playing' ? 'active' : '' }}">
-                            上映中
-                        </a>
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-title">言語</div>
-                    <div class="filter-options">
-                        @foreach ($languages as $code => $name)
-                            <a href="/?category={{ $currentCategory }}&language={{ $code }}&streaming={{ $currentStreaming }}"
-                               class="language-option {{ $currentLanguage === $code ? 'active' : '' }}">
-                                {{ $name }}
+        <div class="filters-wrapper">
+            <div class="filters-container">
+                <div class="filters">
+                    <div class="filter-section">
+                        <div class="filter-title">カテゴリー</div>
+                        <div class="filter-options">
+                            <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'popular' ? 'active' : '' }}">
+                                人気
                             </a>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-title">配信サービス</div>
-                    <div class="filter-options">
-                        @foreach ($streamingServices as $id => $name)
-                            <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
-                               class="streaming-option {{ (string)$currentStreaming === (string)$id ? 'active' : '' }}">
-                                {{ $name }}
+                            <a href="/?category=top_rated&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'top_rated' ? 'active' : '' }}">
+                                高評価
                             </a>
-                        @endforeach
+                            <a href="/?category=now_playing&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'now_playing' ? 'active' : '' }}">
+                                上映中
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">言語</div>
+                        <div class="filter-options">
+                            @foreach ($languages as $code => $name)
+                                <a href="/?category={{ $currentCategory }}&language={{ $code }}&streaming={{ $currentStreaming }}"
+                                   class="language-option {{ $currentLanguage === $code ? 'active' : '' }}">
+                                    {{ $name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">配信サービス</div>
+                        <div class="filter-options">
+                            @foreach ($streamingServices as $id => $name)
+                                <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
+                                   class="streaming-option {{ (string)$currentStreaming === (string)$id ? 'active' : '' }}">
+                                    {{ $name }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="content-wrapper">
-        <div class="content-container">
-            @if(count($movies) > 0)
-                <div class="movie-grid">
-                    @foreach ($movies as $movie)
-                        <div class="movie-item">
-                            @if($movie['poster_path'])
-                                <img
-                                    src="https://image.tmdb.org/t/p/w300{{ $movie['poster_path'] }}"
-                                    alt="{{ $movie['title'] }}"
-                                    class="movie-poster"
-                                    loading="lazy"
-                                >
-                            @else
-                                <div class="placeholder" title="{{ $movie['title'] }}">
-                                    画像なし
-                                </div>
-                            @endif
-                            <div class="movie-title">{{ $movie['title'] }}</div>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="no-results">
-                    <p>条件に一致する映画が見つかりませんでした</p>
-                    <a href="/" class="reset-link">すべての条件をリセット</a>
-                </div>
-            @endif
+        <div class="content-wrapper">
+            <div class="content-container">
+                @if(count($movies) > 0)
+                    <div class="movie-grid">
+                        @foreach ($movies as $movie)
+                            <div class="movie-item">
+                                @if($movie['poster_path'])
+                                    <img
+                                        src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
+                                        alt="{{ $movie['title'] }}"
+                                        class="movie-poster"
+                                        loading="lazy"
+                                    >
+                                @else
+                                    <div class="placeholder" title="{{ $movie['title'] }}">
+                                        画像なし
+                                    </div>
+                                @endif
+                                <div class="movie-title">{{ $movie['title'] }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="no-results">
+                        <p>条件に一致する映画が見つかりませんでした</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="attribution">
+            映画情報提供元: TMDb<br>
+            配信情報提供元: JustWatch
         </div>
     </div>
-
-    <div class="attribution">
-        映画情報提供元: TMDb<br>
-        配信情報提供元: JustWatch
-    </div>
-</div>
 </body>
 </html>
