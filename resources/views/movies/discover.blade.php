@@ -5,289 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>映画リスト</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        html {
-            overflow-y: scroll; /* 常にスクロールバーを表示して、幅の変化を防ぐ */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            padding: 20px;
-            width: 100%;
-            overflow-x: hidden; /* 横スクロールを防止 */
-        }
-
-        .main-container {
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            position: relative;
-            display: block; /* flexではなくblockレイアウトに変更 */
-        }
-
-        .header {
-            margin-bottom: 20px;
-            padding: 0 10px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
-
-        /* フィルターセクションを固定幅のブロックとして配置 */
-        .filters-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .filters-container {
-            width: 800px; /* 固定幅 */
-            max-width: 100%; /* モバイル対応 */
-            min-height: 220px;
-        }
-
-        .filters {
-            display: block; /* flexではなくblockに変更 */
-            width: 100%;
-        }
-
-        .filter-section {
-            margin-bottom: 15px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .filter-title {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .filter-options {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .category-tab {
-            padding: 8px 16px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            text-decoration: none;
-            color: #fff;
-            font-size: 14px;
-            transition: background-color 0.2s ease;
-            display: inline-block;
-        }
-
-        .category-tab:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .category-tab.active {
-            background-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .language-option, .streaming-option {
-            padding: 6px 12px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            text-decoration: none;
-            color: #fff;
-            font-size: 13px;
-            transition: background-color 0.2s ease;
-            display: inline-block;
-        }
-
-        .language-option:hover, .streaming-option:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .language-option.active, .streaming-option.active {
-            background-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* コンテンツエリアも固定幅のブロックとして配置 */
-        .content-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-
-        .content-container {
-            width: 1100px; /* 固定幅 */
-            max-width: 100%; /* モバイル対応 */
-            min-height: 300px;
-        }
-
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 画像サイズを大きく */
-            gap: 20px; /* 間隔も少し広げる */
-            width: 100%;
-        }
-
-        .movie-item {
-            position: relative;
-            transition: transform 0.2s ease;
-            cursor: pointer;
-        }
-
-        .movie-item:hover {
-            transform: scale(1.05);
-        }
-
-        .movie-poster {
-            width: 100%;
-            aspect-ratio: 2/3;
-            object-fit: cover;
-            border-radius: 6px; /* 角を少し丸く */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* シャドウを強調 */
-        }
-
-        .movie-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px; /* パディングを増やす */
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9)); /* グラデーションを強く */
-            color: #fff;
-            font-size: 13px; /* フォントサイズを少し大きく */
-            border-radius: 0 0 6px 6px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .movie-item:hover .movie-title {
-            opacity: 1;
-        }
-
-        .no-results {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 50px 0;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .load-more-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 12px 24px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s ease;
-        }
-
-        .load-more-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .attribution {
-            width: 100%;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* モバイルでも少し大きく */
-                gap: 15px;
-            }
-        }
-    </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-<div class="main-container">
-    <div class="header">
-        <h1>映画リスト</h1>
+<body class="bg-movie-dark text-movie-light font-sans p-5 w-full overflow-x-hidden">
+<div class="max-w-[1200px] w-full mx-auto relative block">
+    <div class="mb-5 px-2.5 text-center w-full">
+        <h1 class="text-2xl font-medium mb-5">映画リスト</h1>
     </div>
 
-    <div class="filters-wrapper">
-        <div class="filters-container">
-            <div class="filters">
-                <div class="filter-section">
-                    <div class="filter-title">カテゴリー</div>
-                    <div class="filter-options">
-                        <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'popular' ? 'active' : '' }}">
+    <div class="w-full flex justify-center mb-7">
+        <div class="w-[800px] max-w-full min-h-[220px]">
+            <div class="block w-full">
+                <div class="mb-4 w-full text-center">
+                    <div class="text-sm text-movie-gray mb-2 text-center">カテゴリー</div>
+                    <div class="flex justify-center flex-wrap gap-2.5 mx-auto w-full">
+                        <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}"
+                           class="py-2 px-4 bg-movie-panel rounded text-movie-light text-sm transition-colors inline-block
+                                     {{ $currentCategory === 'popular' ? 'bg-movie-panel-active' : '' }} hover:bg-movie-panel-hover">
                             人気
                         </a>
-                        <a href="/?category=top_rated&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'top_rated' ? 'active' : '' }}">
+                        <a href="/?category=top_rated&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}"
+                           class="py-2 px-4 bg-movie-panel rounded text-movie-light text-sm transition-colors inline-block
+                                     {{ $currentCategory === 'top_rated' ? 'bg-movie-panel-active' : '' }} hover:bg-movie-panel-hover">
                             高評価
                         </a>
-                        <a href="/?category=now_playing&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}" class="category-tab {{ $currentCategory === 'now_playing' ? 'active' : '' }}">
+                        <a href="/?category=now_playing&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}"
+                           class="py-2 px-4 bg-movie-panel rounded text-movie-light text-sm transition-colors inline-block
+                                     {{ $currentCategory === 'now_playing' ? 'bg-movie-panel-active' : '' }} hover:bg-movie-panel-hover">
                             上映中
                         </a>
                     </div>
                 </div>
 
-                <div class="filter-section">
-                    <div class="filter-title">言語</div>
-                    <div class="filter-options">
+                <div class="mb-4 w-full text-center">
+                    <div class="text-sm text-movie-gray mb-2 text-center">言語</div>
+                    <div class="flex justify-center flex-wrap gap-2.5 mx-auto w-full">
                         @foreach ($languages as $code => $name)
                             <a href="/?category={{ $currentCategory }}&language={{ $code }}&streaming={{ $currentStreaming }}"
-                               class="language-option {{ $currentLanguage === $code ? 'active' : '' }}">
+                               class="py-1.5 px-3 bg-movie-panel rounded text-movie-light text-sm transition-colors inline-block
+                                     {{ $currentLanguage === $code ? 'bg-movie-panel-active' : '' }} hover:bg-movie-panel-hover">
                                 {{ $name }}
                             </a>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="filter-section">
-                    <div class="filter-title">配信サービス</div>
-                    <div class="filter-options">
+                <div class="mb-4 w-full text-center">
+                    <div class="text-sm text-movie-gray mb-2 text-center">配信サービス</div>
+                    <div class="flex justify-center flex-wrap gap-2.5 mx-auto w-full">
                         @foreach ($streamingServices as $id => $name)
                             <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
-                               class="streaming-option {{ (string)$currentStreaming === (string)$id ? 'active' : '' }}">
+                               class="py-1.5 px-3 bg-movie-panel rounded text-movie-light text-sm transition-colors inline-block
+                                     {{ (string)$currentStreaming === (string)$id ? 'bg-movie-panel-active' : '' }} hover:bg-movie-panel-hover">
                                 {{ $name }}
                             </a>
                         @endforeach
@@ -297,39 +66,43 @@
         </div>
     </div>
 
-    <div class="content-wrapper">
-        <div class="content-container">
+    <div class="w-full flex justify-center">
+        <div class="w-[1100px] max-w-full min-h-[300px]">
             @if(count($movies) > 0)
-                <div class="movie-grid" id="movie-grid">
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-5 w-full" id="movie-grid">
                     @foreach ($movies as $movie)
                         @if($movie['poster_path'])
-                            <div class="movie-item" data-id="{{ $movie['id'] }}">
+                            <div class="relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item" data-id="{{ $movie['id'] }}">
                                 <img
                                     src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
                                     alt="{{ $movie['title'] }}"
-                                    class="movie-poster"
+                                    class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
                                     loading="lazy"
                                 >
-                                <div class="movie-title">{{ $movie['title'] }}</div>
+                                <div class="movie-title-overlay">
+                                    {{ $movie['title'] }}
+                                </div>
                             </div>
                         @endif
                     @endforeach
                 </div>
 
-                <div class="loading" id="loading" style="display: none;">
-                    <div class="loading-spinner"></div>
+                <div class="text-center p-5 mt-5 hidden" id="loading">
+                    <div class="inline-block w-[30px] h-[30px] border-3 border-movie-panel rounded-full border-t-movie-light spin-animation"></div>
                 </div>
 
-                <button class="load-more-btn" id="load-more-btn">もっと見る</button>
+                <button class="block mx-auto my-5 py-3 px-6 bg-movie-panel-hover text-movie-light border-none rounded cursor-pointer text-base transition-colors hover:bg-movie-panel-active" id="load-more-btn">
+                    もっと見る
+                </button>
             @else
-                <div class="no-results">
+                <div class="w-full max-w-[600px] mx-auto text-center py-12 text-movie-gray text-base bg-movie-panel/20 rounded-lg">
                     <p>条件に一致する映画が見つかりませんでした</p>
                 </div>
             @endif
         </div>
     </div>
 
-    <div class="attribution">
+    <div class="w-full text-xs text-movie-muted text-center mt-7">
         映画情報提供元: TMDb<br>
         配信情報提供元: JustWatch
     </div>
@@ -351,7 +124,7 @@
         });
 
         // 映画アイテムのクリックイベントを追加
-        $(document).on('click', '.movie-item', function() {
+        $(document).on('click', '[data-id]', function() {
             const movieId = $(this).data('id');
             if (movieId) {
                 window.location.href = '/movies/' + movieId;
@@ -387,14 +160,16 @@
                         $.each(data.movies, function(index, movie) {
                             if (movie.poster_path) {
                                 const movieItem = `
-                                    <div class="movie-item" data-id="${movie.id}">
+                                    <div class="relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item" data-id="${movie.id}">
                                         <img
                                             src="https://image.tmdb.org/t/p/w342${movie.poster_path}"
                                             alt="${movie.title}"
-                                            class="movie-poster"
+                                            class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
                                             loading="lazy"
                                         >
-                                        <div class="movie-title">${movie.title}</div>
+                                        <div class="movie-title-overlay">
+                                            ${movie.title}
+                                        </div>
                                     </div>
                                 `;
                                 $('#movie-grid').append(movieItem);

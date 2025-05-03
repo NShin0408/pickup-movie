@@ -4,215 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .back-button {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-
-        .back-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .movie-header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .movie-poster {
-            flex: 0 0 300px;
-        }
-
-        .poster-image {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .movie-info {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .movie-title {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .movie-meta {
-            margin-bottom: 20px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .movie-overview {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .movie-genres {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .genre-tag {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .section-title {
-            font-size: 1.4rem;
-            margin: 30px 0 15px 0;
-        }
-
-        .trailer-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9アスペクト比 */
-            height: 0;
-            overflow: hidden;
-            max-width: 100%;
-            margin-bottom: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .trailer-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .cast-list {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-        }
-
-        .cast-item {
-            flex: 0 0 120px;
-        }
-
-        .cast-image {
-            width: 100%;
-            aspect-ratio: 2/3;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .cast-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-        }
-
-        .cast-character {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .streaming-services {
-            margin-top: 20px;
-        }
-
-        .service-category {
-            margin-bottom: 20px;
-        }
-
-        .service-category-title {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 10px;
-        }
-
-        .service-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .service-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .service-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .no-services {
-            color: rgba(255, 255, 255, 0.5);
-            font-style: italic;
-        }
-
-        .attribution {
-            width: 100%;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-<div class="container">
-    <a href="/" class="back-button">← 一覧に戻る</a>
+<body class="bg-movie-dark text-movie-light font-sans p-0 overflow-x-hidden">
+<div class="max-w-[1100px] mx-auto p-5">
+    <a href="/" class="inline-block my-5 py-2.5 px-5 bg-movie-panel text-movie-light no-underline rounded transition-colors hover:bg-movie-panel-hover">
+        ← 一覧に戻る
+    </a>
 
     @if(!empty($movie))
-        <div class="movie-header">
-            <div class="movie-poster">
+        <div class="flex flex-wrap gap-7 mb-7">
+            <div class="flex-none w-[300px]">
                 @if(!empty($movie['poster_path']))
-                    <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}" alt="{{ $movie['title'] }}" class="poster-image">
+                    <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
+                         alt="{{ $movie['title'] }}"
+                         class="w-full rounded-lg shadow-movie-trailer">
                 @endif
             </div>
 
-            <div class="movie-info">
-                <h1 class="movie-title">{{ $movie['title'] }}</h1>
+            <div class="flex-1 min-w-[300px]">
+                <h1 class="text-4xl mb-2.5">{{ $movie['title'] }}</h1>
 
-                <div class="movie-meta">
+                <div class="mb-5 text-movie-gray">
                     @if(!empty($movie['release_date']))
                         公開日: {{ \Carbon\Carbon::parse($movie['release_date'])->format('Y年m月d日') }}
                     @endif
@@ -227,17 +40,19 @@
                 </div>
 
                 @if(!empty($movie['genres']))
-                    <div class="movie-genres">
+                    <div class="flex flex-wrap gap-2.5 mb-5">
                         @foreach($movie['genres'] as $genre)
-                            <span class="genre-tag">{{ $genre['name'] }}</span>
+                            <span class="bg-movie-panel-hover py-1.5 px-2.5 rounded text-sm">
+                                {{ $genre['name'] }}
+                            </span>
                         @endforeach
                     </div>
                 @endif
 
                 @if(!empty($movie['overview']))
-                    <p class="movie-overview">{{ $movie['overview'] }}</p>
+                    <p class="text-lg leading-relaxed mb-5">{{ $movie['overview'] }}</p>
                 @else
-                    <p class="movie-overview">概要はありません</p>
+                    <p class="text-lg leading-relaxed mb-5">概要はありません</p>
                 @endif
 
                 <!-- 配信サービス情報の表示 -->
@@ -247,17 +62,18 @@
                 @endphp
 
                 @if($hasServices)
-                    <div class="streaming-services">
-                        <h2 class="section-title">配信サービス</h2>
+                    <div class="mt-5">
+                        <h2 class="text-2xl mt-7 mb-4">配信サービス</h2>
 
                         @if(!empty($providers['flatrate']))
-                            <div class="service-category">
-                                <div class="service-category-title">ストリーミング</div>
-                                <div class="service-list">
+                            <div class="mb-5">
+                                <div class="text-base text-movie-gray mb-2.5">ストリーミング</div>
+                                <div class="flex flex-wrap gap-4">
                                     @foreach($providers['flatrate'] as $service)
-                                        <div class="service-logo">
+                                        <div class="w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service">
                                             <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
-                                                 alt="{{ $service['provider_name'] }}">
+                                                 alt="{{ $service['provider_name'] }}"
+                                                 class="w-full h-full object-cover">
                                         </div>
                                     @endforeach
                                 </div>
@@ -265,13 +81,14 @@
                         @endif
 
                         @if(!empty($providers['rent']))
-                            <div class="service-category">
-                                <div class="service-category-title">レンタル</div>
-                                <div class="service-list">
+                            <div class="mb-5">
+                                <div class="text-base text-movie-gray mb-2.5">レンタル</div>
+                                <div class="flex flex-wrap gap-4">
                                     @foreach($providers['rent'] as $service)
-                                        <div class="service-logo">
+                                        <div class="w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service">
                                             <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
-                                                 alt="{{ $service['provider_name'] }}">
+                                                 alt="{{ $service['provider_name'] }}"
+                                                 class="w-full h-full object-cover">
                                         </div>
                                     @endforeach
                                 </div>
@@ -279,47 +96,52 @@
                         @endif
                     </div>
                 @else
-                    <div class="streaming-services">
-                        <h2 class="section-title">配信サービス</h2>
-                        <p class="no-services">現在、日本での配信情報はありません</p>
+                    <div class="mt-5">
+                        <h2 class="text-2xl mt-7 mb-4">配信サービス</h2>
+                        <p class="text-movie-muted italic">現在、日本での配信情報はありません</p>
                     </div>
                 @endif
             </div>
         </div>
 
         @if($trailerUrl)
-            <h2 class="section-title">トレーラー</h2>
-            <div class="trailer-container">
-                <iframe src="{{ $trailerUrl }}" title="YouTube trailer" allowfullscreen></iframe>
+            <h2 class="text-2xl mt-7 mb-4">トレーラー</h2>
+            <div class="relative pb-[56.25%] h-0 overflow-hidden max-w-full mb-7 rounded-lg shadow-movie-trailer">
+                <iframe src="{{ $trailerUrl }}"
+                        title="YouTube trailer"
+                        allowfullscreen
+                        class="absolute top-0 left-0 w-full h-full border-none"></iframe>
             </div>
         @endif
 
         @if(!empty($movie['credits']['cast']))
-            <h2 class="section-title">キャスト</h2>
-            <div class="cast-list">
+            <h2 class="text-2xl mt-7 mb-4">キャスト</h2>
+            <div class="flex gap-4 overflow-x-auto pb-4">
                 @foreach(array_slice($movie['credits']['cast'], 0, 10) as $cast)
-                    <div class="cast-item">
+                    <div class="flex-none w-[120px]">
                         @if(!empty($cast['profile_path']))
-                            <img src="https://image.tmdb.org/t/p/w185{{ $cast['profile_path'] }}" alt="{{ $cast['name'] }}" class="cast-image">
+                            <img src="https://image.tmdb.org/t/p/w185{{ $cast['profile_path'] }}"
+                                 alt="{{ $cast['name'] }}"
+                                 class="w-full aspect-poster object-cover rounded-lg mb-2">
                         @else
-                            <div class="cast-image" style="background-color: #333; display: flex; align-items: center; justify-content: center;">
+                            <div class="w-full aspect-poster bg-neutral-700 flex items-center justify-center rounded-lg mb-2">
                                 <span>No Image</span>
                             </div>
                         @endif
-                        <div class="cast-name">{{ $cast['name'] }}</div>
-                        <div class="cast-character">{{ $cast['character'] }}</div>
+                        <div class="font-semibold text-sm mb-1">{{ $cast['name'] }}</div>
+                        <div class="text-xs text-movie-gray">{{ $cast['character'] }}</div>
                     </div>
                 @endforeach
             </div>
         @endif
 
-        <div class="attribution">
+        <div class="w-full text-xs text-movie-muted text-center mt-7 pt-5 border-t border-movie-panel">
             映画情報提供元: TMDb<br>
             配信情報提供元: JustWatch
         </div>
     @else
-        <div style="text-align: center; padding: 50px 0;">
-            <h1>映画情報が見つかりませんでした</h1>
+        <div class="text-center py-12">
+            <h1 class="text-2xl">映画情報が見つかりませんでした</h1>
         </div>
     @endif
 </div>

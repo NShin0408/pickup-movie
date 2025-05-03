@@ -1,23 +1,26 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* カスタムコンポーネントスタイル */
-@layer utilities {
-    .back-button {
-        @apply inline-block my-5 py-2.5 px-5 bg-white/10 text-white rounded transition-colors;
+/* カスタムスタイル */
+@layer components {
+    .fade-gradient {
+        @apply bg-gradient-to-t from-black to-transparent;
     }
 
-    .back-button:hover {
-        @apply bg-white/20;
+    .movie-title-overlay {
+        @apply absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-black to-transparent text-white text-sm rounded-b-lg opacity-0 transition-opacity duration-200;
     }
 
-    .movie-poster-container {
-        @apply flex-none w-[300px];
+    .movie-item:hover .movie-title-overlay {
+        @apply opacity-100;
     }
 
-    .poster-image {
-        @apply w-full rounded-lg shadow-lg;
+    .spin-animation {
+        animation: spin 1s linear infinite;
     }
 
-    /* 他のスタイルコンポーネントも同様に定義 */
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 }
