@@ -4,7 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+        .carousel-items {
+            display: flex;
+            transition: transform 0.5s ease;
+            padding: 0 10px;
+        }
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            border: none;
+            color: white;
+        }
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .carousel-prev {
+            left: 10px;
+        }
+        .carousel-next {
+            right: 10px;
+        }
+        .movie-item {
+            padding: 0 10px;
+        }
+    </style>
 </head>
 <body class="bg-movie-dark text-movie-light font-sans p-0 overflow-x-hidden">
 <div class="max-w-[1100px] mx-auto p-5">
@@ -123,84 +164,102 @@
         <!-- 同じ監督の他作品セクション -->
         @if(!empty($director) && !empty($directorMovies))
             <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の他作品</h2>
-            <div class="flex gap-4 overflow-x-auto pb-4">
-                @foreach($directorMovies as $directorMovie)
-                    @if(!empty($directorMovie['poster_path']))
-                        <div class="flex-none w-[150px] cursor-pointer movie-item"
-                             onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
-                            <div class="relative">
-                                <img src="https://image.tmdb.org/t/p/w300{{ $directorMovie['poster_path'] }}"
-                                     alt="{{ $directorMovie['title'] }}"
-                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster mb-2">
-                                <div class="movie-title-overlay">
-                                    {{ $directorMovie['title'] }}
+            <div class="carousel-container" id="director-carousel">
+                <div class="carousel-items">
+                    @foreach($directorMovies as $directorMovie)
+                        @if(!empty($directorMovie['poster_path']))
+                            <div class="flex-none w-[180px] cursor-pointer movie-item"
+                                 onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
+                                <div class="relative">
+                                    <img src="https://image.tmdb.org/t/p/w342{{ $directorMovie['poster_path'] }}"
+                                         alt="{{ $directorMovie['title'] }}"
+                                         class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
+                                    <div class="movie-title-overlay">
+                                        {{ $directorMovie['title'] }}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-sm truncate">{{ $directorMovie['title'] }}</div>
-                            @if(!empty($directorMovie['release_date']))
-                                <div class="text-xs text-movie-gray">
-                                    {{ substr($directorMovie['release_date'], 0, 4) }}年
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
+                </div>
+                <button class="carousel-button carousel-prev" data-carousel="director-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button class="carousel-button carousel-next" data-carousel="director-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
             </div>
         @endif
 
         <!-- おすすめ映画セクション -->
         @if(!empty($movie['recommendations']['results']))
             <h2 class="text-2xl mt-7 mb-4">おすすめ映画</h2>
-            <div class="flex gap-4 overflow-x-auto pb-4">
-                @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
-                    @if(!empty($recommended['poster_path']))
-                        <div class="flex-none w-[150px] cursor-pointer movie-item"
-                             onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
-                            <div class="relative">
-                                <img src="https://image.tmdb.org/t/p/w300{{ $recommended['poster_path'] }}"
-                                     alt="{{ $recommended['title'] }}"
-                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster mb-2">
-                                <div class="movie-title-overlay">
-                                    {{ $recommended['title'] }}
+            <div class="carousel-container" id="recommendations-carousel">
+                <div class="carousel-items">
+                    @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
+                        @if(!empty($recommended['poster_path']))
+                            <div class="flex-none w-[180px] cursor-pointer movie-item"
+                                 onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
+                                <div class="relative">
+                                    <img src="https://image.tmdb.org/t/p/w342{{ $recommended['poster_path'] }}"
+                                         alt="{{ $recommended['title'] }}"
+                                         class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
+                                    <div class="movie-title-overlay">
+                                        {{ $recommended['title'] }}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-sm truncate">{{ $recommended['title'] }}</div>
-                            @if(!empty($recommended['release_date']))
-                                <div class="text-xs text-movie-gray">
-                                    {{ substr($recommended['release_date'], 0, 4) }}年
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
+                </div>
+                <button class="carousel-button carousel-prev" data-carousel="recommendations-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button class="carousel-button carousel-next" data-carousel="recommendations-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
             </div>
         @endif
 
         <!-- 類似映画セクション -->
         @if(!empty($movie['similar']['results']))
             <h2 class="text-2xl mt-7 mb-4">類似映画</h2>
-            <div class="flex gap-4 overflow-x-auto pb-4">
-                @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
-                    @if(!empty($similar['poster_path']))
-                        <div class="flex-none w-[150px] cursor-pointer movie-item"
-                             onclick="window.location.href='/movies/{{ $similar['id'] }}'">
-                            <div class="relative">
-                                <img src="https://image.tmdb.org/t/p/w300{{ $similar['poster_path'] }}"
-                                     alt="{{ $similar['title'] }}"
-                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster mb-2">
-                                <div class="movie-title-overlay">
-                                    {{ $similar['title'] }}
+            <div class="carousel-container" id="similar-carousel">
+                <div class="carousel-items">
+                    @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
+                        @if(!empty($similar['poster_path']))
+                            <div class="flex-none w-[180px] cursor-pointer movie-item"
+                                 onclick="window.location.href='/movies/{{ $similar['id'] }}'">
+                                <div class="relative">
+                                    <img src="https://image.tmdb.org/t/p/w342{{ $similar['poster_path'] }}"
+                                         alt="{{ $similar['title'] }}"
+                                         class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
+                                    <div class="movie-title-overlay">
+                                        {{ $similar['title'] }}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-sm truncate">{{ $similar['title'] }}</div>
-                            @if(!empty($similar['release_date']))
-                                <div class="text-xs text-movie-gray">
-                                    {{ substr($similar['release_date'], 0, 4) }}年
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
+                </div>
+                <button class="carousel-button carousel-prev" data-carousel="similar-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button class="carousel-button carousel-next" data-carousel="similar-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
             </div>
         @endif
 
@@ -214,5 +273,88 @@
         </div>
     @endif
 </div>
+
+<script>
+    $(document).ready(function() {
+        // カルーセルの設定
+        $('.carousel-container').each(function() {
+            const container = $(this);
+            const items = container.find('.carousel-items');
+            const itemWidth = 200; // 180px + 左右パディング20px
+            const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
+            const totalItems = items.children().length;
+
+            // 初期状態でボタンの表示/非表示を設定
+            if (totalItems <= visibleItems) {
+                container.find('.carousel-button').hide();
+            }
+
+            // カルーセルの現在位置
+            container.data('position', 0);
+        });
+
+        // 次へボタンのクリックイベント
+        $('.carousel-next').click(function() {
+            const carouselId = $(this).data('carousel');
+            const container = $('#' + carouselId);
+            const items = container.find('.carousel-items');
+            const itemWidth = 200; // 180px + 左右パディング20px
+            const totalItems = items.children().length;
+            const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
+            let position = container.data('position') || 0;
+
+            // 次のポジションを計算（最大値を超えないようにする）
+            position = Math.min(position + visibleItems, totalItems - visibleItems);
+            container.data('position', position);
+
+            // カルーセルを移動
+            items.css('transform', `translateX(-${position * itemWidth}px)`);
+        });
+
+        // 前へボタンのクリックイベント
+        $('.carousel-prev').click(function() {
+            const carouselId = $(this).data('carousel');
+            const container = $('#' + carouselId);
+            const items = container.find('.carousel-items');
+            const itemWidth = 200; // 180px + 左右パディング20px
+            const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
+            let position = container.data('position') || 0;
+
+            // 前のポジションを計算（0未満にならないようにする）
+            position = Math.max(position - visibleItems, 0);
+            container.data('position', position);
+
+            // カルーセルを移動
+            items.css('transform', `translateX(-${position * itemWidth}px)`);
+        });
+
+        // ウィンドウリサイズ時の処理
+        $(window).resize(function() {
+            $('.carousel-container').each(function() {
+                const container = $(this);
+                const items = container.find('.carousel-items');
+                const itemWidth = 200; // 180px + 左右パディング20px
+                const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
+                const totalItems = items.children().length;
+                let position = container.data('position') || 0;
+
+                // ポジションを再調整
+                position = Math.min(position, totalItems - visibleItems);
+                position = Math.max(position, 0);
+                container.data('position', position);
+
+                // カルーセルを移動
+                items.css('transform', `translateX(-${position * itemWidth}px)`);
+
+                // ボタンの表示/非表示を設定
+                if (totalItems <= visibleItems) {
+                    container.find('.carousel-button').hide();
+                } else {
+                    container.find('.carousel-button').show();
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
