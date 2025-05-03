@@ -290,4 +290,49 @@ class TMDBService
     {
         return "https://www.youtube.com/embed/{$youtubeKey}";
     }
+
+    /**
+     * 特定の監督の映画を取得
+     */
+    public function getDirectorMovies(int $directorId, int $excludeMovieId = null, int $limit = 10): array
+    {
+        $params = [
+            'language' => $this->defaultLanguage,
+            'with_crew' => $directorId,
+            'sort_by' => 'popularity.desc'
+        ];
+
+        $response = $this->makeApiRequest('/discover/movie', $params);
+        $results = $response['results'] ?? [];
+
+        // 現在の映画を除外
+        if ($excludeMovieId) {
+            $results = array_filter($results, function($movie) use ($excludeMovieId) {
+                return $movie['id'] != $excludeMovieId;
+            });
+        }
+
+        return $this->filterMoviesWithPosters($results, $limit);
+    }
+
+    /**
+     * 映画から監督情報を取得
+     */
+    public function getDirectorFromMovie(array $movie): ?array
+    {
+        if (empty($movie['credits']['crew'])) {
+            return null;
+        }
+
+        $directors = array_filter($movie['credits']['crew'], function($crewMember) {
+            return $crewMember['job'] === 'Director';
+        });
+
+        if (empty($directors)) {
+            return null;
+        }
+
+        // 最初の監督を返す
+        return reset($directors);
+    }
 }

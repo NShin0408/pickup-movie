@@ -57,23 +57,35 @@ class MovieController extends Controller
         ]);
     }
 
-    /**
-     * 映画詳細ページを表示
-     */
-    public function show(int $movieId): View|Application|Factory
+    public function show($id): View|Application|Factory
     {
-        $movie = $this->tmdbService->getMovieDetails($movieId);
-        $trailer = $this->tmdbService->getOfficialTrailer($movieId);
+        // TMDBService のインスタンスを取得
+        $tmdbService = app(TMDBService::class);
 
+        // 映画の詳細情報を取得
+        $movie = $tmdbService->getMovieDetails($id);
+
+        // トレーラーURLの取得
         $trailerUrl = null;
-        if ($trailer) {
-            $trailerUrl = $this->tmdbService->getYoutubeEmbedUrl($trailer['key']);
+        $directorMovies = [];
+        $director = null;
+
+        if (!empty($movie)) {
+            $trailer = $tmdbService->getOfficialTrailer($id);
+            if ($trailer) {
+                $trailerUrl = $tmdbService->getYoutubeEmbedUrl($trailer['key']);
+            }
+
+            // 監督情報を取得
+            $director = $tmdbService->getDirectorFromMovie($movie);
+
+            // 監督の他の作品を取得
+            if ($director) {
+                $directorMovies = $tmdbService->getDirectorMovies($director['id'], $movie['id']);
+            }
         }
 
-        return view('movies.show', [
-            'movie' => $movie,
-            'trailerUrl' => $trailerUrl,
-        ]);
+        return view('movies.show', compact('movie', 'trailerUrl', 'director', 'directorMovies'));
     }
 
     /**

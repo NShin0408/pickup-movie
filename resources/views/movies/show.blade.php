@@ -49,6 +49,12 @@
                     </div>
                 @endif
 
+                @if(!empty($director))
+                    <div class="mb-5">
+                        <span class="text-movie-gray">監督:</span> {{ $director['name'] }}
+                    </div>
+                @endif
+
                 @if(!empty($movie['overview']))
                     <p class="text-lg leading-relaxed mb-5">{{ $movie['overview'] }}</p>
                 @else
@@ -114,23 +120,86 @@
             </div>
         @endif
 
-        @if(!empty($movie['credits']['cast']))
-            <h2 class="text-2xl mt-7 mb-4">キャスト</h2>
+        <!-- 同じ監督の他作品セクション -->
+        @if(!empty($director) && !empty($directorMovies))
+            <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の他作品</h2>
             <div class="flex gap-4 overflow-x-auto pb-4">
-                @foreach(array_slice($movie['credits']['cast'], 0, 10) as $cast)
-                    <div class="flex-none w-[120px]">
-                        @if(!empty($cast['profile_path']))
-                            <img src="https://image.tmdb.org/t/p/w185{{ $cast['profile_path'] }}"
-                                 alt="{{ $cast['name'] }}"
-                                 class="w-full aspect-poster object-cover rounded-lg mb-2">
-                        @else
-                            <div class="w-full aspect-poster bg-neutral-700 flex items-center justify-center rounded-lg mb-2">
-                                <span>No Image</span>
+                @foreach($directorMovies as $directorMovie)
+                    @if(!empty($directorMovie['poster_path']))
+                        <div class="flex-none w-[150px] cursor-pointer movie-item"
+                             onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
+                            <div class="relative">
+                                <img src="https://image.tmdb.org/t/p/w300{{ $directorMovie['poster_path'] }}"
+                                     alt="{{ $directorMovie['title'] }}"
+                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster mb-2">
+                                <div class="movie-title-overlay">
+                                    {{ $directorMovie['title'] }}
+                                </div>
                             </div>
-                        @endif
-                        <div class="font-semibold text-sm mb-1">{{ $cast['name'] }}</div>
-                        <div class="text-xs text-movie-gray">{{ $cast['character'] }}</div>
-                    </div>
+                            <div class="text-sm truncate">{{ $directorMovie['title'] }}</div>
+                            @if(!empty($directorMovie['release_date']))
+                                <div class="text-xs text-movie-gray">
+                                    {{ substr($directorMovie['release_date'], 0, 4) }}年
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @endif
+
+        <!-- おすすめ映画セクション -->
+        @if(!empty($movie['recommendations']['results']))
+            <h2 class="text-2xl mt-7 mb-4">おすすめ映画</h2>
+            <div class="flex gap-4 overflow-x-auto pb-4">
+                @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
+                    @if(!empty($recommended['poster_path']))
+                        <div class="flex-none w-[150px] cursor-pointer movie-item"
+                             onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
+                            <div class="relative">
+                                <img src="https://image.tmdb.org/t/p/w300{{ $recommended['poster_path'] }}"
+                                     alt="{{ $recommended['title'] }}"
+                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster mb-2">
+                                <div class="movie-title-overlay">
+                                    {{ $recommended['title'] }}
+                                </div>
+                            </div>
+                            <div class="text-sm truncate">{{ $recommended['title'] }}</div>
+                            @if(!empty($recommended['release_date']))
+                                <div class="text-xs text-movie-gray">
+                                    {{ substr($recommended['release_date'], 0, 4) }}年
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @endif
+
+        <!-- 類似映画セクション -->
+        @if(!empty($movie['similar']['results']))
+            <h2 class="text-2xl mt-7 mb-4">類似映画</h2>
+            <div class="flex gap-4 overflow-x-auto pb-4">
+                @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
+                    @if(!empty($similar['poster_path']))
+                        <div class="flex-none w-[150px] cursor-pointer movie-item"
+                             onclick="window.location.href='/movies/{{ $similar['id'] }}'">
+                            <div class="relative">
+                                <img src="https://image.tmdb.org/t/p/w300{{ $similar['poster_path'] }}"
+                                     alt="{{ $similar['title'] }}"
+                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster mb-2">
+                                <div class="movie-title-overlay">
+                                    {{ $similar['title'] }}
+                                </div>
+                            </div>
+                            <div class="text-sm truncate">{{ $similar['title'] }}</div>
+                            @if(!empty($similar['release_date']))
+                                <div class="text-xs text-movie-gray">
+                                    {{ substr($similar['release_date'], 0, 4) }}年
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 @endforeach
             </div>
         @endif
