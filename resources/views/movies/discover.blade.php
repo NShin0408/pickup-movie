@@ -303,7 +303,7 @@
                 <div class="movie-grid" id="movie-grid">
                     @foreach ($movies as $movie)
                         @if($movie['poster_path'])
-                            <div class="movie-item">
+                            <div class="movie-item" data-id="{{ $movie['id'] }}">
                                 <img
                                     src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
                                     alt="{{ $movie['title'] }}"
@@ -350,6 +350,14 @@
             loadMoreMovies();
         });
 
+        // 映画アイテムのクリックイベントを追加
+        $(document).on('click', '.movie-item', function() {
+            const movieId = $(this).data('id');
+            if (movieId) {
+                window.location.href = '/movies/' + movieId;
+            }
+        });
+
         function loadMoreMovies() {
             if (isLoading || !hasMore) return;
 
@@ -379,16 +387,16 @@
                         $.each(data.movies, function(index, movie) {
                             if (movie.poster_path) {
                                 const movieItem = `
-                                        <div class="movie-item">
-                                            <img
-                                                src="https://image.tmdb.org/t/p/w342${movie.poster_path}"
-                                                alt="${movie.title}"
-                                                class="movie-poster"
-                                                loading="lazy"
-                                            >
-                                            <div class="movie-title">${movie.title}</div>
-                                        </div>
-                                    `;
+                                    <div class="movie-item" data-id="${movie.id}">
+                                        <img
+                                            src="https://image.tmdb.org/t/p/w342${movie.poster_path}"
+                                            alt="${movie.title}"
+                                            class="movie-poster"
+                                            loading="lazy"
+                                        >
+                                        <div class="movie-title">${movie.title}</div>
+                                    </div>
+                                `;
                                 $('#movie-grid').append(movieItem);
                             }
                         });

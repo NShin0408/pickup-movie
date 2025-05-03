@@ -8,7 +8,7 @@ class TMDBService
 {
     protected string $apiKey;
     protected string $baseUrl = 'https://api.themoviedb.org/3';
-    protected string $defaultLanguage = 'ja_JP'; // デフォルト表示言語
+    protected string $defaultLanguage = 'ja-JP'; // デフォルト表示言語
     protected string $defaultRegion = 'JP'; // 日本のリージョンコード
 
     // 言語選択オプションの定義（ISO 639-1 + ISO 3166-1）
@@ -47,7 +47,7 @@ class TMDBService
     }
 
     /**
-     * 選択された言語から表示言語(language)とオリジナル言語(with_original_language)のパラメータを取得
+     * 選択された言語から表示言語と原語のパラメータを取得
      */
     private function getLanguageParams(?string $selectedLanguage): array
     {
@@ -72,85 +72,98 @@ class TMDBService
         $countryCode = $parts[1]; // JP
 
         return [
-            // APIリクエスト用にアンダースコア形式に変換（ja_JP）
-            'display_language' => $langCode . '_' . $countryCode,
+            // APIリクエスト用にアンダースコア形式に変換（ja-JP）
+            'display_language' => $this->defaultLanguage,
             // オリジナル言語フィルタには言語コードのみ使用（ja）
             'original_language' => $langCode
         ];
     }
 
+    /**
+     * TMDBのAPIに対してGETリクエストを実行し、結果を返す
+     */
+    private function makeApiRequest(string $endpoint, array $params = []): array
+    {
+        $params['api_key'] = $this->apiKey;
+
+        // アダルトコンテンツは常に除外
+        $params['include_adult'] = false;
+
+        $response = Http::get("{$this->baseUrl}{$endpoint}", $params);
+
+        if (!$response->successful()) {
+            // ログに記録したり、例外を投げたりすることもできます
+            return [];
+        }
+
+        return $response->json() ?? [];
+    }
+
+    /**
+     * ポスターがある映画だけをフィルタリング
+     */
+    private function filterMoviesWithPosters(array $results, int $limit = 20): array
+    {
+        // ポスターがある映画だけをフィルタリング
+        $filteredResults = array_filter($results, function($movie) {
+            return !empty($movie['poster_path']);
+        });
+
+        // 指定件数に制限
+        return array_slice(array_values($filteredResults), 0, $limit);
+    }
+
+    /**
+     * 映画情報を取得する共通メソッド
+     */
+    private function fetchMovies(string $endpoint, array $langParams, ?string $streamingService = null, array $additionalParams = [], int $page = 1): array
+    {
+        // 配信サービスの指定または言語フィルタがある場合はdiscoverエンドポイントを使用
+        if (($streamingService && $streamingService !== 'all') || $langParams['original_language']) {
+            $options = array_merge($additionalParams, ['page' => $page]);
+            return $this->discoverMovies($options, $langParams, $streamingService);
+        }
+
+        // 通常のエンドポイントを使用
+        $params = array_merge($additionalParams, [
+            'language' => $langParams['display_language'],
+            'page' => $page,
+        ]);
+
+        $response = $this->makeApiRequest($endpoint, $params);
+        $results = $response['results'] ?? [];
+
+        return $this->filterMoviesWithPosters($results);
+    }
+
+    /**
+     * 人気映画を取得
+     */
     public function getPopularMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
 
-        // 配信サービスの指定がある場合はdiscoverエンドポイントを使用
-        if ($streamingService && $streamingService !== 'all') {
-            return $this->discoverMovies([
-                'sort_by' => 'popularity.desc',
-                'page' => $page
-            ], $langParams, $streamingService);
-        }
-
-        // 言語フィルタがある場合もdiscoverエンドポイントを使用
-        if ($langParams['original_language']) {
-            return $this->discoverMovies([
-                'sort_by' => 'popularity.desc',
-                'page' => $page
-            ], $langParams);
-        }
-
-        // 通常のpopularエンドポイントを使用
-        $params = [
-            'api_key' => $this->apiKey,
-            'language' => $langParams['display_language'], // 表示言語（ja_JP形式）
-            'page' => $page,
-            'include_adult' => false, // アダルトコンテンツ除外
-        ];
-
-        $response = Http::get("{$this->baseUrl}/movie/popular", $params);
-        $results = $response->json()['results'] ?? [];
-
-        // ポスターがある映画のみをフィルタリング
-        return $this->filterMoviesWithPosters($results);
+        return $this->fetchMovies('/movie/popular', $langParams, $streamingService, [
+            'sort_by' => 'popularity.desc'
+        ], $page);
     }
 
+    /**
+     * 高評価映画を取得
+     */
     public function getTopRatedMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
 
-        // 配信サービスの指定がある場合はdiscoverエンドポイントを使用
-        if ($streamingService && $streamingService !== 'all') {
-            return $this->discoverMovies([
-                'sort_by' => 'vote_average.desc',
-                'vote_count.gte' => 100,
-                'page' => $page
-            ], $langParams, $streamingService);
-        }
-
-        // 言語フィルタがある場合もdiscoverエンドポイントを使用
-        if ($langParams['original_language']) {
-            return $this->discoverMovies([
-                'sort_by' => 'vote_average.desc',
-                'vote_count.gte' => 100,
-                'page' => $page
-            ], $langParams);
-        }
-
-        // 通常のtop_ratedエンドポイントを使用
-        $params = [
-            'api_key' => $this->apiKey,
-            'language' => $langParams['display_language'], // 表示言語（ja_JP形式）
-            'page' => $page,
-            'include_adult' => false, // アダルトコンテンツ除外
-        ];
-
-        $response = Http::get("{$this->baseUrl}/movie/top_rated", $params);
-        $results = $response->json()['results'] ?? [];
-
-        // ポスターがある映画のみをフィルタリング
-        return $this->filterMoviesWithPosters($results);
+        return $this->fetchMovies('/movie/top_rated', $langParams, $streamingService, [
+            'sort_by' => 'vote_average.desc',
+            'vote_count.gte' => 100
+        ], $page);
     }
 
+    /**
+     * 上映中の映画を取得
+     */
     public function getNowPlayingMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
@@ -159,101 +172,122 @@ class TMDBService
         $now = date('Y-m-d');
         $oneMonthAgo = date('Y-m-d', strtotime('-1 month'));
 
-        // 配信サービスの指定がある場合はdiscoverエンドポイントを使用
-        if ($streamingService && $streamingService !== 'all') {
-            return $this->discoverMovies([
-                'sort_by' => 'release_date.desc',
-                'release_date.gte' => $oneMonthAgo,
-                'release_date.lte' => $now,
-                'page' => $page
-            ], $langParams, $streamingService);
-        }
-
-        // 言語フィルタがある場合もdiscoverエンドポイントを使用
-        if ($langParams['original_language']) {
-            return $this->discoverMovies([
-                'sort_by' => 'release_date.desc',
-                'release_date.gte' => $oneMonthAgo,
-                'release_date.lte' => $now,
-                'page' => $page
-            ], $langParams);
-        }
-
-        // 通常のnow_playingエンドポイントを使用
-        $params = [
-            'api_key' => $this->apiKey,
-            'language' => $langParams['display_language'], // 表示言語（ja_JP形式）
-            'page' => $page,
-            'include_adult' => false, // アダルトコンテンツ除外
-        ];
-
-        $response = Http::get("{$this->baseUrl}/movie/now_playing", $params);
-        $results = $response->json()['results'] ?? [];
-
-        // ポスターがある映画のみをフィルタリング
-        return $this->filterMoviesWithPosters($results);
+        return $this->fetchMovies('/movie/now_playing', $langParams, $streamingService, [
+            'sort_by' => 'release_date.desc',
+            'release_date.gte' => $oneMonthAgo,
+            'release_date.lte' => $now
+        ], $page);
     }
 
+    /**
+     * 映画を検索する
+     */
     public function discoverMovies(array $options = [], array $langParams = [], ?string $streamingService = null): array
     {
         $defaultOptions = [
-            'include_adult' => false, // アダルトコンテンツ除外
             'page' => 1,
         ];
 
         $params = array_merge($defaultOptions, $options, [
-            'api_key' => $this->apiKey,
             'language' => $langParams['display_language'] ?? $this->defaultLanguage,
         ]);
 
-        // アダルトコンテンツは明示的に除外
-        $params['include_adult'] = false;
-
         // オリジナル言語フィルターを追加
         if (!empty($langParams['original_language'])) {
-            $params['with_original_language'] = $langParams['original_language']; // 制作言語でフィルタリング
+            $params['with_original_language'] = $langParams['original_language'];
         }
 
         // 配信サービスでフィルタリング
-        if ($streamingService) {
-            $params['with_watch_providers'] = $streamingService; // 配信サービスでフィルタリング
-            $params['watch_region'] = $this->defaultRegion; // 日本国内での配信状況
+        if ($streamingService && $streamingService !== 'all') {
+            $params['with_watch_providers'] = $streamingService;
+            $params['watch_region'] = $this->defaultRegion;
         }
 
-        $response = Http::get("{$this->baseUrl}/discover/movie", $params);
-        $results = $response->json()['results'] ?? [];
+        $response = $this->makeApiRequest('/discover/movie', $params);
+        $results = $response['results'] ?? [];
 
-        // ポスターがある映画のみをフィルタリング
         return $this->filterMoviesWithPosters($results);
     }
 
     /**
-     * ポスターがある映画だけをフィルタリング
+     * 映画の詳細情報を取得
      */
-    private function filterMoviesWithPosters(array $results): array
+    public function getMovieDetails(int $movieId): array
     {
-        // ポスターがある映画だけをフィルタリング
-        $filteredResults = array_filter($results, function($movie) {
-            return !empty($movie['poster_path']);
-        });
+        $params = [
+            'language' => $this->defaultLanguage,
+            'append_to_response' => 'credits,similar,recommendations,videos,watch/providers'
+        ];
 
-        // 最大20件に制限
-        return array_slice(array_values($filteredResults), 0, 20);
+        return $this->makeApiRequest("/movie/{$movieId}", $params);
     }
 
     /**
-     * 利用可能な配信サービスのリストを取得
+     * 映画のビデオ情報（トレーラーなど）を取得
      */
-    public function getAvailableWatchProviders(): array
+    public function getMovieVideos(int $movieId): array
     {
         $params = [
-            'api_key' => $this->apiKey,
             'language' => $this->defaultLanguage,
-            'watch_region' => $this->defaultRegion,
         ];
 
-        $response = Http::get("{$this->baseUrl}/watch/providers/movie", $params);
+        $response = $this->makeApiRequest("/movie/{$movieId}/videos", $params);
+        $videos = $response['results'] ?? [];
 
-        return $response->json()['results'] ?? [];
+        // 日本語のビデオがない場合は英語のビデオも取得
+        if (empty($videos) && $this->defaultLanguage !== 'en-US') {
+            $params['language'] = 'en-US';
+            $response = $this->makeApiRequest("/movie/{$movieId}/videos", $params);
+            $videos = $response['results'] ?? [];
+        }
+
+        return $videos;
+    }
+
+    /**
+     * 公式トレーラーやティーザーを優先して返す
+     */
+    public function getOfficialTrailer(int $movieId): ?array
+    {
+        $videos = $this->getMovieVideos($movieId);
+
+        if (empty($videos)) {
+            return null;
+        }
+
+        // タイプと名前でフィルタリング (優先順位順)
+        $typeOrder = ['Trailer', 'Teaser'];
+
+        foreach ($typeOrder as $type) {
+            // 公式トレーラーを探す
+            $officialTrailers = array_filter($videos, function($video) use ($type) {
+                return $video['type'] === $type &&
+                    ($video['official'] ?? true) &&
+                    $video['site'] === 'YouTube';
+            });
+
+            if (!empty($officialTrailers)) {
+                return reset($officialTrailers); // 最初の要素を返す
+            }
+        }
+
+        // 公式トレーラーが見つからない場合は、YouTubeの動画を返す
+        $youtubeVideos = array_filter($videos, function($video) {
+            return $video['site'] === 'YouTube';
+        });
+
+        if (!empty($youtubeVideos)) {
+            return reset($youtubeVideos);
+        }
+
+        return null;
+    }
+
+    /**
+     * YouTubeの埋め込みURLを生成
+     */
+    public function getYoutubeEmbedUrl(string $youtubeKey): string
+    {
+        return "https://www.youtube.com/embed/{$youtubeKey}";
     }
 }
