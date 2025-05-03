@@ -146,83 +146,182 @@
             font-size: 0.8rem;
             color: rgba(255, 255, 255, 0.7);
         }
+
+        .streaming-services {
+            margin-top: 20px;
+        }
+
+        .service-category {
+            margin-bottom: 20px;
+        }
+
+        .service-category-title {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .service-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .service-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-services {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .attribution {
+            width: 100%;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="/" class="back-button">← 一覧に戻る</a>
-        
-        @if(!empty($movie))
-            <div class="movie-header">
-                <div class="movie-poster">
-                    @if(!empty($movie['poster_path']))
-                        <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}" alt="{{ $movie['title'] }}" class="poster-image">
+<div class="container">
+    <a href="/" class="back-button">← 一覧に戻る</a>
+
+    @if(!empty($movie))
+        <div class="movie-header">
+            <div class="movie-poster">
+                @if(!empty($movie['poster_path']))
+                    <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}" alt="{{ $movie['title'] }}" class="poster-image">
+                @endif
+            </div>
+
+            <div class="movie-info">
+                <h1 class="movie-title">{{ $movie['title'] }}</h1>
+
+                <div class="movie-meta">
+                    @if(!empty($movie['release_date']))
+                        公開日: {{ \Carbon\Carbon::parse($movie['release_date'])->format('Y年m月d日') }}
+                    @endif
+
+                    @if(!empty($movie['runtime']))
+                        | {{ $movie['runtime'] }}分
+                    @endif
+
+                    @if(!empty($movie['vote_average']))
+                        | 評価: {{ number_format($movie['vote_average'], 1) }}/10 ({{ number_format($movie['vote_count']) }}件)
                     @endif
                 </div>
-                
-                <div class="movie-info">
-                    <h1 class="movie-title">{{ $movie['title'] }}</h1>
-                    
-                    <div class="movie-meta">
-                        @if(!empty($movie['release_date']))
-                            公開日: {{ \Carbon\Carbon::parse($movie['release_date'])->format('Y年m月d日') }}
+
+                @if(!empty($movie['genres']))
+                    <div class="movie-genres">
+                        @foreach($movie['genres'] as $genre)
+                            <span class="genre-tag">{{ $genre['name'] }}</span>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if(!empty($movie['overview']))
+                    <p class="movie-overview">{{ $movie['overview'] }}</p>
+                @else
+                    <p class="movie-overview">概要はありません</p>
+                @endif
+
+                <!-- 配信サービス情報の表示 -->
+                @php
+                    $providers = $movie['watch/providers']['results']['JP'] ?? null;
+                    $hasServices = (!empty($providers['flatrate']) || !empty($providers['rent']));
+                @endphp
+
+                @if($hasServices)
+                    <div class="streaming-services">
+                        <h2 class="section-title">配信サービス</h2>
+
+                        @if(!empty($providers['flatrate']))
+                            <div class="service-category">
+                                <div class="service-category-title">ストリーミング</div>
+                                <div class="service-list">
+                                    @foreach($providers['flatrate'] as $service)
+                                        <div class="service-logo">
+                                            <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
+                                                 alt="{{ $service['provider_name'] }}">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         @endif
-                        
-                        @if(!empty($movie['runtime']))
-                            | {{ $movie['runtime'] }}分
-                        @endif
-                        
-                        @if(!empty($movie['vote_average']))
-                            | 評価: {{ number_format($movie['vote_average'], 1) }}/10 ({{ number_format($movie['vote_count']) }}件)
+
+                        @if(!empty($providers['rent']))
+                            <div class="service-category">
+                                <div class="service-category-title">レンタル</div>
+                                <div class="service-list">
+                                    @foreach($providers['rent'] as $service)
+                                        <div class="service-logo">
+                                            <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
+                                                 alt="{{ $service['provider_name'] }}">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         @endif
                     </div>
-                    
-                    @if(!empty($movie['genres']))
-                        <div class="movie-genres">
-                            @foreach($movie['genres'] as $genre)
-                                <span class="genre-tag">{{ $genre['name'] }}</span>
-                            @endforeach
-                        </div>
-                    @endif
-                    
-                    @if(!empty($movie['overview']))
-                        <p class="movie-overview">{{ $movie['overview'] }}</p>
-                    @else
-                        <p class="movie-overview">概要はありません</p>
-                    @endif
-                </div>
+                @else
+                    <div class="streaming-services">
+                        <h2 class="section-title">配信サービス</h2>
+                        <p class="no-services">現在、日本での配信情報はありません</p>
+                    </div>
+                @endif
             </div>
-            
-            @if($trailerUrl)
-                <h2 class="section-title">トレーラー</h2>
-                <div class="trailer-container">
-                    <iframe src="{{ $trailerUrl }}" title="YouTube trailer" allowfullscreen></iframe>
-                </div>
-            @endif
-            
-            @if(!empty($movie['credits']['cast']))
-                <h2 class="section-title">キャスト</h2>
-                <div class="cast-list">
-                    @foreach(array_slice($movie['credits']['cast'], 0, 10) as $cast)
-                        <div class="cast-item">
-                            @if(!empty($cast['profile_path']))
-                                <img src="https://image.tmdb.org/t/p/w185{{ $cast['profile_path'] }}" alt="{{ $cast['name'] }}" class="cast-image">
-                            @else
-                                <div class="cast-image" style="background-color: #333; display: flex; align-items: center; justify-content: center;">
-                                    <span>No Image</span>
-                                </div>
-                            @endif
-                            <div class="cast-name">{{ $cast['name'] }}</div>
-                            <div class="cast-character">{{ $cast['character'] }}</div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        @else
-            <div style="text-align: center; padding: 50px 0;">
-                <h1>映画情報が見つかりませんでした</h1>
+        </div>
+
+        @if($trailerUrl)
+            <h2 class="section-title">トレーラー</h2>
+            <div class="trailer-container">
+                <iframe src="{{ $trailerUrl }}" title="YouTube trailer" allowfullscreen></iframe>
             </div>
         @endif
-    </div>
+
+        @if(!empty($movie['credits']['cast']))
+            <h2 class="section-title">キャスト</h2>
+            <div class="cast-list">
+                @foreach(array_slice($movie['credits']['cast'], 0, 10) as $cast)
+                    <div class="cast-item">
+                        @if(!empty($cast['profile_path']))
+                            <img src="https://image.tmdb.org/t/p/w185{{ $cast['profile_path'] }}" alt="{{ $cast['name'] }}" class="cast-image">
+                        @else
+                            <div class="cast-image" style="background-color: #333; display: flex; align-items: center; justify-content: center;">
+                                <span>No Image</span>
+                            </div>
+                        @endif
+                        <div class="cast-name">{{ $cast['name'] }}</div>
+                        <div class="cast-character">{{ $cast['character'] }}</div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        <div class="attribution">
+            映画情報提供元: TMDb<br>
+            配信情報提供元: JustWatch
+        </div>
+    @else
+        <div style="text-align: center; padding: 50px 0;">
+            <h1>映画情報が見つかりませんでした</h1>
+        </div>
+    @endif
+</div>
 </body>
 </html>
