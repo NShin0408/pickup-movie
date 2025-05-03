@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Services\TMDBService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
@@ -14,7 +18,7 @@ class MovieController extends Controller
         $this->tmdbService = $tmdbService;
     }
 
-    public function discover(Request $request)
+    public function discover(Request $request): View|Application|Factory
     {
         $category = $request->query('category', 'popular');
         $language = $request->query('language', 'all');
@@ -36,7 +40,7 @@ class MovieController extends Controller
         ]);
     }
 
-    public function loadMore(Request $request)
+    public function loadMore(Request $request): JsonResponse
     {
         $category = $request->query('category', 'popular');
         $language = $request->query('language', 'all');
