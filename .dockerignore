@@ -1,0 +1,27 @@
+# Node modules はビルドステージで再構築されるので不要
+node_modules
+
+# Laravel の vendor も同様（composer install で再構築）
+vendor
+
+# 環境変数ファイルはセキュリティのため除外
+.env
+
+# キャッシュやログ類
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+storage/*.key
+storage/logs
+storage/framework/sessions
+storage/framework/views
+storage/framework/cache
+
+# OSやエディタごとの不要ファイル
+.DS_Store
+.idea
+.vscode
+
+# Git
+.git
+.gitignore
