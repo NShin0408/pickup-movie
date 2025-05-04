@@ -133,9 +133,9 @@
                 <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach($directorMovies as $directorMovie)
                         @if(!empty($directorMovie['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1 sm:px-2 md:px-3"
                                  onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
-                                <div class="relative">
+                                <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $directorMovie['poster_path'] }}"
                                          alt="{{ $directorMovie['title'] }}"
                                          class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
@@ -173,9 +173,9 @@
                 <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
                         @if(!empty($recommended['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1 sm:px-2 md:px-3"
                                  onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
-                                <div class="relative">
+                                <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $recommended['poster_path'] }}"
                                          alt="{{ $recommended['title'] }}"
                                          class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
@@ -213,9 +213,9 @@
                 <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
                         @if(!empty($similar['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1 sm:px-2 md:px-3"
                                  onclick="window.location.href='/movies/{{ $similar['id'] }}'">
-                                <div class="relative">
+                                <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $similar['poster_path'] }}"
                                          alt="{{ $similar['title'] }}"
                                          class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
