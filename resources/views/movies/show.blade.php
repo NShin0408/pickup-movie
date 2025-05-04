@@ -1,5 +1,5 @@
 @php use Carbon\Carbon; @endphp
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -248,88 +248,5 @@
         </div>
     @endif
 </div>
-
-<script>
-    $(document).ready(function () {
-        // カルーセルの設定
-        $('.relative.overflow-hidden').each(function () {
-            const container = $(this);
-            const items = container.find('.flex.transition-transform');
-            const itemWidth = 200; // 180px + 左右パディング20px
-            const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
-            const totalItems = items.children('.flex-none').length;
-
-            // 初期状態でボタンの表示/非表示を設定
-            if (totalItems <= visibleItems) {
-                container.find('button').hide();
-            }
-
-            // カルーセルの現在位置
-            container.data('position', 0);
-        });
-
-        // 次へボタンのクリックイベント
-        $('button:nth-child(3)').click(function () {
-            const carouselId = $(this).data('carousel');
-            const container = $('#' + carouselId);
-            const items = container.find('.flex.transition-transform');
-            const itemWidth = 200; // 180px + 左右パディング20px
-            const totalItems = items.children('.flex-none').length;
-            const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
-            let position = container.data('position') || 0;
-
-            // 次のポジションを計算（最大値を超えないようにする）
-            position = Math.min(position + visibleItems, totalItems - visibleItems);
-            container.data('position', position);
-
-            // カルーセルを移動
-            items.css('transform', `translateX(-${position * itemWidth}px)`);
-        });
-
-        // 前へボタンのクリックイベント
-        $('button:nth-child(2)').click(function () {
-            const carouselId = $(this).data('carousel');
-            const container = $('#' + carouselId);
-            const items = container.find('.flex.transition-transform');
-            const itemWidth = 200; // 180px + 左右パディング20px
-            const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
-            let position = container.data('position') || 0;
-
-            // 前のポジションを計算（0未満にならないようにする）
-            position = Math.max(position - visibleItems, 0);
-            container.data('position', position);
-
-            // カルーセルを移動
-            items.css('transform', `translateX(-${position * itemWidth}px)`);
-        });
-
-        // ウィンドウリサイズ時の処理
-        $(window).resize(function () {
-            $('.relative.overflow-hidden').each(function () {
-                const container = $(this);
-                const items = container.find('.flex.transition-transform');
-                const itemWidth = 200; // 180px + 左右パディング20px
-                const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
-                const totalItems = items.children('.flex-none').length;
-                let position = container.data('position') || 0;
-
-                // ポジションを再調整
-                position = Math.min(position, totalItems - visibleItems);
-                position = Math.max(position, 0);
-                container.data('position', position);
-
-                // カルーセルを移動
-                items.css('transform', `translateX(-${position * itemWidth}px)`);
-
-                // ボタンの表示/非表示を設定
-                if (totalItems <= visibleItems) {
-                    container.find('button').hide();
-                } else {
-                    container.find('button').show();
-                }
-            });
-        });
-    });
-</script>
 </body>
 </html>
