@@ -4,6 +4,8 @@ FROM node:18 AS node_builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+ARG VITE_ASSET_URL
+ENV VITE_ASSET_URL=${VITE_ASSET_URL}
 COPY . .
 RUN npm run build
 
