@@ -1,4 +1,4 @@
-# --- Node.js で Vite ビルド ---
+# --- Node.js でフロントエンドをビルド ---
 FROM node:18 AS node_builder
 
 WORKDIR /app
@@ -7,31 +7,41 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# --- PHP CLI コンテナ（artisan serve 用）---
-FROM php:8.2-cli
+# --- PHP + Apache で Laravel を実行 ---
+FROM php:8.2-apache
 
-# 必要な拡張とツール
-RUN apt-get update && apt-get install -y unzip git libzip-dev sqlite3 libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip
+# PHP拡張 & Apache設定
+RUN apt-get update && apt-get install -y unzip git libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-# Composer
+# Apacheの公開ディレクトリを Laravel の public に変更
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+
+# Composer をインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# アプリケーションファイル
-WORKDIR /app
+# Laravel アプリを配置
+WORKDIR /var/www/html
 COPY . .
 
-# node ビルド成果物
-COPY --from=node_builder /app/public/build /app/public/build
+# フロントエンドビルド成果物を配置
+COPY --from=node_builder /app/public/build /var/www/html/public/build
+
+# .env がなければ example をコピー（Render 環境でも artisan コマンドを通すため）
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 # Laravel セットアップ
 RUN composer install --no-dev --optimize-autoloader \
     && php artisan config:clear \
-    && php artisan key:generate \
+    && php artisan key:generate || echo "Skip key:generate (maybe no .env)" \
     && php artisan view:clear
 
-# ポート設定
-EXPOSE 8000
+# mod_rewrite を有効化（ルーティング用）
+RUN a2enmod rewrite
 
-# Laravel サーバ起動（本番環境で artisan serve を使うのは限定的だがRenderではOK）
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# ポート80（Apache）をExpose
+EXPOSE 80
+
+# Apache をフォアグラウンド起動
+CMD ["apache2-foreground"]
