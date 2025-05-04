@@ -1,15 +1,16 @@
-<!DOCTYPE html>
+@php use Carbon\Carbon; @endphp
+    <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.ts'])
 </head>
 <body class="bg-movie-dark text-movie-light font-sans p-0 overflow-x-hidden">
 <div class="max-w-[1100px] mx-auto p-5">
-    <a href="/" class="inline-block my-5 py-2.5 px-5 bg-movie-panel text-movie-light no-underline rounded transition-colors hover:bg-movie-panel-hover">
+    <a href="/"
+       class="inline-block my-5 py-2.5 px-5 bg-movie-panel text-movie-light no-underline rounded transition-colors hover:bg-movie-panel-hover">
         ← 一覧に戻る
     </a>
 
@@ -28,7 +29,7 @@
 
                 <div class="mb-5 text-movie-gray">
                     @if(!empty($movie['release_date']))
-                        公開日: {{ \Carbon\Carbon::parse($movie['release_date'])->format('Y年m月d日') }}
+                        公開日: {{ Carbon::parse($movie['release_date'])->format('Y年m月d日') }}
                     @endif
 
                     @if(!empty($movie['runtime']))
@@ -138,14 +139,20 @@
                         @endif
                     @endforeach
                 </div>
-                <button class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="director-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                <button
+                    class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    data-carousel="director-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
                     </svg>
                 </button>
-                <button class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="director-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                <button
+                    class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    data-carousel="director-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
                     </svg>
                 </button>
             </div>
@@ -172,14 +179,20 @@
                         @endif
                     @endforeach
                 </div>
-                <button class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="recommendations-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                <button
+                    class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    data-carousel="recommendations-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
                     </svg>
                 </button>
-                <button class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="recommendations-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                <button
+                    class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    data-carousel="recommendations-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
                     </svg>
                 </button>
             </div>
@@ -206,14 +219,20 @@
                         @endif
                     @endforeach
                 </div>
-                <button class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="similar-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                <button
+                    class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    data-carousel="similar-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
                     </svg>
                 </button>
-                <button class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="similar-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                <button
+                    class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    data-carousel="similar-carousel">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                         stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
                     </svg>
                 </button>
             </div>
@@ -231,9 +250,9 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // カルーセルの設定
-        $('.relative.overflow-hidden').each(function() {
+        $('.relative.overflow-hidden').each(function () {
             const container = $(this);
             const items = container.find('.flex.transition-transform');
             const itemWidth = 200; // 180px + 左右パディング20px
@@ -250,7 +269,7 @@
         });
 
         // 次へボタンのクリックイベント
-        $('button:nth-child(3)').click(function() {
+        $('button:nth-child(3)').click(function () {
             const carouselId = $(this).data('carousel');
             const container = $('#' + carouselId);
             const items = container.find('.flex.transition-transform');
@@ -268,7 +287,7 @@
         });
 
         // 前へボタンのクリックイベント
-        $('button:nth-child(2)').click(function() {
+        $('button:nth-child(2)').click(function () {
             const carouselId = $(this).data('carousel');
             const container = $('#' + carouselId);
             const items = container.find('.flex.transition-transform');
@@ -285,8 +304,8 @@
         });
 
         // ウィンドウリサイズ時の処理
-        $(window).resize(function() {
-            $('.relative.overflow-hidden').each(function() {
+        $(window).resize(function () {
+            $('.relative.overflow-hidden').each(function () {
                 const container = $(this);
                 const items = container.find('.flex.transition-transform');
                 const itemWidth = 200; // 180px + 左右パディング20px
