@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
-    @php
-        $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
-    @endphp
 
-    <link rel="stylesheet" href="{{ secure_asset('build/' . $manifest['resources/css/app.css']['file']) }}">
-    <script type="module" src="{{ secure_asset('build/' . $manifest['resources/js/app.ts']['file']) }}"></script>
+    @if (app()->environment('development'))
+        @vite(['resources/css/app.css', 'resources/js/app.ts'])
+    @else
+        @php
+            $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+        @endphp
+        <link rel="stylesheet" href="{{ secure_asset('build/' . $manifest['resources/css/app.css']['file']) }}">
+        <script type="module" src="{{ secure_asset('build/' . $manifest['resources/js/app.ts']['file']) }}"></script>
+    @endif
 </head>
 <body class="bg-movie-dark text-movie-light font-sans p-0 overflow-x-hidden">
 <div class="max-w-[1100px] mx-auto p-5">
