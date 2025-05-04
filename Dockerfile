@@ -33,9 +33,10 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 # Laravel セットアップ
 RUN composer install --no-dev --optimize-autoloader \
+    && touch database/database.sqlite \
     && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache database/database.sqlite \
+    && chmod -R 775 storage bootstrap/cache database/database.sqlite \
     && php artisan key:generate --force \
     && php artisan config:cache
 
