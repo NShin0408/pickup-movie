@@ -44,6 +44,9 @@ class TMDBService
     public function __construct()
     {
         $this->apiKey = config('services.tmdb.api_key');
+        if (!$this->apiKey) {
+            logger()->error('TMDB API Key is missing!');
+        }
     }
 
     /**
