@@ -207,7 +207,7 @@
 
         <!-- 類似映画セクション -->
         @if(!empty($movie['similar']['results']))
-            <h2 class="text-2xl mt-7 mb-4">類似映画</h2>
+            <h2 class="text-2xl mt-7 mb-4">関連映画</h2>
             <div class="relative overflow-hidden py-2.5" id="similar-carousel">
                 <div class="flex transition-transform duration-500 ease-in-out px-2.5">
                     @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
