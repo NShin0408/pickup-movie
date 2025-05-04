@@ -129,11 +129,11 @@
         <!-- 同じ監督の他作品セクション -->
         @if(!empty($director) && !empty($directorMovies))
             <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の映画</h2>
-            <div class="relative overflow-hidden py-1.5 touch-pan-x" id="director-carousel">
+            <div class="relative overflow-hidden py-1.5 sm:py-2 sm:pr-2 touch-pan-x" id="director-carousel">
                 <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach($directorMovies as $directorMovie)
                         @if(!empty($directorMovie['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[210px] cursor-pointer px-1"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1"
                                  onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $directorMovie['poster_path'] }}"
@@ -169,11 +169,11 @@
         <!-- おすすめ映画セクション -->
         @if(!empty($movie['recommendations']['results']))
             <h2 class="text-2xl mt-7 mb-4">おすすめ映画</h2>
-            <div class="relative overflow-hidden py-1.5 touch-pan-x" id="recommendations-carousel">
+            <div class="relative overflow-hidden py-1.5 sm:py-2 sm:pr-2 touch-pan-x" id="recommendations-carousel">
                 <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
                         @if(!empty($recommended['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[210px] cursor-pointer px-1"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1"
                                  onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $recommended['poster_path'] }}"
@@ -209,11 +209,11 @@
         <!-- 関連映画セクション -->
         @if(!empty($movie['similar']['results']))
             <h2 class="text-2xl mt-7 mb-4">関連映画</h2>
-            <div class="relative overflow-hidden py-1.5 touch-pan-x" id="similar-carousel">
+            <div class="relative overflow-hidden py-1.5 sm:py-2 sm:pr-2 touch-pan-x" id="similar-carousel">
                 <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
                         @if(!empty($similar['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[210px] cursor-pointer px-1"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1"
                                  onclick="window.location.href='/movies/{{ $similar['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $similar['poster_path'] }}"

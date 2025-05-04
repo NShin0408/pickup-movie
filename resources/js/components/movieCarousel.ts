@@ -25,7 +25,10 @@ export class MovieCarousel {
         const itemRect = firstItem.getBoundingClientRect();
         const itemWidth = itemRect.width; // 実際の表示幅を取得
 
-        const visibleItems = Math.floor((container.clientWidth - 60) / itemWidth); // ボタン分の余白調整
+        // PCモードでは約5.2枚表示できるように調整
+        const visibleItems = this.isMobile
+            ? Math.floor((container.clientWidth - 60) / itemWidth)
+            : Math.floor((container.clientWidth - 30) / itemWidth);
         const totalItems = itemElements.length;
 
         // カルーセルの現在位置
@@ -173,7 +176,10 @@ export class MovieCarousel {
     const itemWidth = parseFloat(container.getAttribute('data-item-width') || '200');
     const itemElements = Array.from(items.querySelectorAll('.flex-none'));
     const totalItems = itemElements.length;
-    const visibleItems = Math.floor((container.clientWidth - 60) / itemWidth);
+    // PCモードでは約5.2枚表示できるように調整
+    const visibleItems = this.isMobile
+        ? Math.floor((container.clientWidth - 60) / itemWidth)
+        : Math.floor((container.clientWidth - 30) / itemWidth);
 
     let position = parseInt(container.getAttribute('data-position') || '0');
 
@@ -197,7 +203,10 @@ export class MovieCarousel {
     const itemWidth = parseFloat(container.getAttribute('data-item-width') || '200');
     const itemElements = Array.from(items.querySelectorAll('.flex-none'));
     const totalItems = itemElements.length;
-    const visibleItems = Math.floor((container.clientWidth - 60) / itemWidth);
+    // PCモードでは約5.2枚表示できるように調整
+    const visibleItems = this.isMobile
+        ? Math.floor((container.clientWidth - 60) / itemWidth)
+        : Math.floor((container.clientWidth - 30) / itemWidth);
 
     let position = parseInt(container.getAttribute('data-position') || '0');
 
@@ -243,7 +252,10 @@ export class MovieCarousel {
       const itemWidth = itemRect.width;
       container.setAttribute('data-item-width', itemWidth.toString());
 
-      const visibleItems = Math.floor((container.clientWidth - 60) / itemWidth);
+      // PCモードでは約5.2枚表示できるように調整
+      const visibleItems = this.isMobile
+          ? Math.floor((container.clientWidth - 60) / itemWidth)
+          : Math.floor((container.clientWidth - 30) / itemWidth);
       const totalItems = itemElements.length;
 
       let position = parseInt(container.getAttribute('data-position') || '0');
