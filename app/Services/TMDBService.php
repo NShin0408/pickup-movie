@@ -32,7 +32,7 @@ class TMDBService
     // 配信サービスの定義
     public static array $streamingServices = [
         'all' => 'すべてのサービス',
-        '1001' => 'U-NEXT',
+        '84' => 'U-NEXT',
         '337' => 'Disney+',
         '9' => 'Amazon Prime Video',
         '8' => 'Netflix',
