@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.ts'])
 </head>
 <body class="bg-movie-dark text-movie-light font-sans p-0 overflow-x-hidden">
 <div class="max-w-[1100px] mx-auto p-5">

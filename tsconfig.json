@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "ES2015",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./public/js",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "lib": ["DOM", "ES2018", "ESNext"],
+      "paths": {
+      "@/*": ["resources/js/*"]
+    }
+  },
+  "include": ["resources/js/**/*.ts"],
+  "exclude": ["node_modules"]
+}
