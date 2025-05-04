@@ -16,5 +16,6 @@ export default defineConfig({
         alias: {
             '@': '/resources/js'
         }
-    }
+    },
+    base: 'https://pickup-movie.onrender.com/build/',
 });
