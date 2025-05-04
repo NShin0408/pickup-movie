@@ -74,7 +74,7 @@
                 <div class="grid grid-cols-4 sm:grid-cols-5 gap-1.5 sm:gap-3 md:gap-5 w-full" id="movie-grid">
                     @foreach ($movies as $movie)
                         @if($movie['poster_path'])
-                            <div class="relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item px-0.5 sm:px-0" data-id="{{ $movie['id'] }}">
+                            <div class="relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item" data-id="{{ $movie['id'] }}">
                                 <img
                                     src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
                                     alt="{{ $movie['title'] }}"
