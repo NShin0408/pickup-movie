@@ -33,9 +33,8 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 # Laravel セットアップ
 RUN composer install --no-dev --optimize-autoloader \
-    && php artisan config:clear \
-    && php artisan key:generate || echo "Skip key:generate (maybe no .env)" \
-    && php artisan view:clear
+    && php artisan key:generate --force \
+    && php artisan config:cache
 
 # mod_rewrite を有効化（ルーティング用）
 RUN a2enmod rewrite
