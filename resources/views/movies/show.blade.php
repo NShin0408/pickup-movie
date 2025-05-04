@@ -34,10 +34,6 @@
                     @if(!empty($movie['runtime']))
                         | {{ $movie['runtime'] }}分
                     @endif
-
-                    @if(!empty($movie['vote_average']))
-                        | 評価: {{ number_format($movie['vote_average'], 1) }}/10 ({{ number_format($movie['vote_count']) }}件)
-                    @endif
                 </div>
 
                 @if(!empty($movie['genres']))
@@ -59,7 +55,7 @@
                 @if(!empty($movie['overview']))
                     <p class="text-lg leading-relaxed mb-5">{{ $movie['overview'] }}</p>
                 @else
-                    <p class="text-lg leading-relaxed mb-5">概要はありません</p>
+                    <p class="text-movie-muted italic">現在、この映画の概要情報はありません</p>
                 @endif
 
                 <!-- 配信サービス情報の表示 -->
