@@ -26,7 +26,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # フロントエンドビルド成果物を配置
-COPY --from=node_builder /app/public/build /var/www/html/public/build
+COPY --from=node_builder /public/build /var/www/html/public/build
 
 # Laravel セットアップ
 RUN composer install --no-dev --optimize-autoloader \
