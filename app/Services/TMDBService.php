@@ -37,7 +37,7 @@ class TMDBService
         '9' => 'Amazon Prime Video',
         '8' => 'Netflix',
         '2' => 'Apple TV+',
-        '138' => 'Hulu',
+        '15' => 'Hulu',
         '190' => 'dTV'
     ];
 
