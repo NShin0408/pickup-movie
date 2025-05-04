@@ -16,16 +16,16 @@
 
     @if(!empty($movie))
         <div class="flex flex-wrap gap-7 mb-7">
-            <div class="flex-none w-[300px]">
+            <div class="flex-none w-[300px] md:w-[300px] w-full px-0">
                 @if(!empty($movie['poster_path']))
                     <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
                          alt="{{ $movie['title'] }}"
-                         class="w-full rounded-lg shadow-movie-trailer">
+                         class="w-full rounded-lg shadow-movie-trailer sm:max-w-[300px] mx-auto sm:mx-0">
                 @endif
             </div>
 
             <div class="flex-1 min-w-[300px]">
-                <h1 class="text-4xl mb-2.5">{{ $movie['title'] }}</h1>
+                <h1 class="text-3xl md:text-4xl mb-2.5">{{ $movie['title'] }}</h1>
 
                 <div class="mb-5 text-movie-gray">
                     @if(!empty($movie['release_date']))
@@ -36,6 +36,7 @@
                         | {{ $movie['runtime'] }}分
                     @endif
                 </div>
+
 
                 @if(!empty($movie['genres']))
                     <div class="flex flex-wrap gap-2.5 mb-5">
@@ -127,12 +128,12 @@
 
         <!-- 同じ監督の他作品セクション -->
         @if(!empty($director) && !empty($directorMovies))
-            <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の映画</h2>
-            <div class="relative overflow-hidden py-2.5" id="director-carousel">
-                <div class="flex transition-transform duration-500 ease-in-out px-2.5">
+            <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} の映画</h2>
+            <div class="relative overflow-hidden py-1.5 touch-pan-x" id="director-carousel">
+                <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach($directorMovies as $directorMovie)
                         @if(!empty($directorMovie['poster_path']))
-                            <div class="flex-none w-[180px] cursor-pointer px-2.5"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[210px] cursor-pointer px-1"
                                  onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $directorMovie['poster_path'] }}"
@@ -147,7 +148,7 @@
                     @endforeach
                 </div>
                 <button
-                    class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    class="absolute top-1/2 left-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
                     data-carousel="director-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                          stroke="currentColor" class="w-6 h-6">
@@ -155,7 +156,7 @@
                     </svg>
                 </button>
                 <button
-                    class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    class="absolute top-1/2 right-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
                     data-carousel="director-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                          stroke="currentColor" class="w-6 h-6">
@@ -168,11 +169,11 @@
         <!-- おすすめ映画セクション -->
         @if(!empty($movie['recommendations']['results']))
             <h2 class="text-2xl mt-7 mb-4">おすすめ映画</h2>
-            <div class="relative overflow-hidden py-2.5" id="recommendations-carousel">
-                <div class="flex transition-transform duration-500 ease-in-out px-2.5">
+            <div class="relative overflow-hidden py-1.5 touch-pan-x" id="recommendations-carousel">
+                <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
                         @if(!empty($recommended['poster_path']))
-                            <div class="flex-none w-[180px] cursor-pointer px-2.5"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[210px] cursor-pointer px-1"
                                  onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $recommended['poster_path'] }}"
@@ -187,7 +188,7 @@
                     @endforeach
                 </div>
                 <button
-                    class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    class="absolute top-1/2 left-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
                     data-carousel="recommendations-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                          stroke="currentColor" class="w-6 h-6">
@@ -195,7 +196,7 @@
                     </svg>
                 </button>
                 <button
-                    class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    class="absolute top-1/2 right-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
                     data-carousel="recommendations-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                          stroke="currentColor" class="w-6 h-6">
@@ -205,14 +206,14 @@
             </div>
         @endif
 
-        <!-- 類似映画セクション -->
+        <!-- 関連映画セクション -->
         @if(!empty($movie['similar']['results']))
             <h2 class="text-2xl mt-7 mb-4">関連映画</h2>
-            <div class="relative overflow-hidden py-2.5" id="similar-carousel">
-                <div class="flex transition-transform duration-500 ease-in-out px-2.5">
+            <div class="relative overflow-hidden py-1.5 touch-pan-x" id="similar-carousel">
+                <div class="flex transition-transform duration-500 ease-in-out px-1">
                     @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
                         @if(!empty($similar['poster_path']))
-                            <div class="flex-none w-[180px] cursor-pointer px-2.5"
+                            <div class="flex-none w-[calc(25%+5px)] sm:w-[210px] cursor-pointer px-1"
                                  onclick="window.location.href='/movies/{{ $similar['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $similar['poster_path'] }}"
@@ -227,7 +228,7 @@
                     @endforeach
                 </div>
                 <button
-                    class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    class="absolute top-1/2 left-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
                     data-carousel="similar-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                          stroke="currentColor" class="w-6 h-6">
@@ -235,7 +236,7 @@
                     </svg>
                 </button>
                 <button
-                    class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer"
+                    class="absolute top-1/2 right-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
                     data-carousel="similar-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                          stroke="currentColor" class="w-6 h-6">
