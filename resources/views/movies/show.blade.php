@@ -119,7 +119,7 @@
 
         <!-- 同じ監督の他作品セクション -->
         @if(!empty($director) && !empty($directorMovies))
-            <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の他作品</h2>
+            <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の映画</h2>
             <div class="relative overflow-hidden py-2.5" id="director-carousel">
                 <div class="flex transition-transform duration-500 ease-in-out px-2.5">
                     @foreach($directorMovies as $directorMovie)
