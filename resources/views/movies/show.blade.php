@@ -63,6 +63,7 @@
                 @php
                     $providers = $movie['watch/providers']['results']['JP'] ?? null;
                     $hasServices = (!empty($providers['flatrate']) || !empty($providers['rent']));
+                    $justwatchUrl = $providers['link'] ?? "https://www.justwatch.com/jp/映画/{$movie['id']}";
                 @endphp
 
                 @if($hasServices)
@@ -74,11 +75,14 @@
                                 <div class="text-base text-movie-gray mb-2.5">ストリーミング</div>
                                 <div class="flex flex-wrap gap-4">
                                     @foreach($providers['flatrate'] as $service)
-                                        <div class="w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service">
+                                        <a href="{{ $justwatchUrl }}"
+                                           class="group relative w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                                           target="_blank"
+                                           title="{{ $service['provider_name'] }}で視聴する">
                                             <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
                                                  alt="{{ $service['provider_name'] }}"
                                                  class="w-full h-full object-cover">
-                                        </div>
+                                        </a>
                                     @endforeach
                                 </div>
                             </div>
@@ -89,11 +93,14 @@
                                 <div class="text-base text-movie-gray mb-2.5">レンタル</div>
                                 <div class="flex flex-wrap gap-4">
                                     @foreach($providers['rent'] as $service)
-                                        <div class="w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service">
+                                        <a href="{{ $justwatchUrl }}"
+                                           class="group relative w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                                           target="_blank"
+                                           title="{{ $service['provider_name'] }}でレンタルする">
                                             <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
                                                  alt="{{ $service['provider_name'] }}"
                                                  class="w-full h-full object-cover">
-                                        </div>
+                                        </a>
                                     @endforeach
                                 </div>
                             </div>
