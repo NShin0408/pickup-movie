@@ -6,46 +6,6 @@
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
-            padding: 10px 0;
-        }
-        .carousel-items {
-            display: flex;
-            transition: transform 0.5s ease;
-            padding: 0 10px;
-        }
-        .carousel-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            border: none;
-            color: white;
-        }
-        .carousel-button:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        .carousel-prev {
-            left: 10px;
-        }
-        .carousel-next {
-            right: 10px;
-        }
-        .movie-item {
-            padding: 0 10px;
-        }
-    </style>
 </head>
 <body class="bg-movie-dark text-movie-light font-sans p-0 overflow-x-hidden">
 <div class="max-w-[1100px] mx-auto p-5">
@@ -164,11 +124,11 @@
         <!-- 同じ監督の他作品セクション -->
         @if(!empty($director) && !empty($directorMovies))
             <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の他作品</h2>
-            <div class="carousel-container" id="director-carousel">
-                <div class="carousel-items">
+            <div class="relative overflow-hidden py-2.5" id="director-carousel">
+                <div class="flex transition-transform duration-500 ease-in-out px-2.5">
                     @foreach($directorMovies as $directorMovie)
                         @if(!empty($directorMovie['poster_path']))
-                            <div class="flex-none w-[180px] cursor-pointer movie-item"
+                            <div class="flex-none w-[180px] cursor-pointer px-2.5"
                                  onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $directorMovie['poster_path'] }}"
@@ -182,12 +142,12 @@
                         @endif
                     @endforeach
                 </div>
-                <button class="carousel-button carousel-prev" data-carousel="director-carousel">
+                <button class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="director-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </button>
-                <button class="carousel-button carousel-next" data-carousel="director-carousel">
+                <button class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="director-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
@@ -198,11 +158,11 @@
         <!-- おすすめ映画セクション -->
         @if(!empty($movie['recommendations']['results']))
             <h2 class="text-2xl mt-7 mb-4">おすすめ映画</h2>
-            <div class="carousel-container" id="recommendations-carousel">
-                <div class="carousel-items">
+            <div class="relative overflow-hidden py-2.5" id="recommendations-carousel">
+                <div class="flex transition-transform duration-500 ease-in-out px-2.5">
                     @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
                         @if(!empty($recommended['poster_path']))
-                            <div class="flex-none w-[180px] cursor-pointer movie-item"
+                            <div class="flex-none w-[180px] cursor-pointer px-2.5"
                                  onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $recommended['poster_path'] }}"
@@ -216,12 +176,12 @@
                         @endif
                     @endforeach
                 </div>
-                <button class="carousel-button carousel-prev" data-carousel="recommendations-carousel">
+                <button class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="recommendations-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </button>
-                <button class="carousel-button carousel-next" data-carousel="recommendations-carousel">
+                <button class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="recommendations-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
@@ -232,11 +192,11 @@
         <!-- 類似映画セクション -->
         @if(!empty($movie['similar']['results']))
             <h2 class="text-2xl mt-7 mb-4">類似映画</h2>
-            <div class="carousel-container" id="similar-carousel">
-                <div class="carousel-items">
+            <div class="relative overflow-hidden py-2.5" id="similar-carousel">
+                <div class="flex transition-transform duration-500 ease-in-out px-2.5">
                     @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
                         @if(!empty($similar['poster_path']))
-                            <div class="flex-none w-[180px] cursor-pointer movie-item"
+                            <div class="flex-none w-[180px] cursor-pointer px-2.5"
                                  onclick="window.location.href='/movies/{{ $similar['id'] }}'">
                                 <div class="relative">
                                     <img src="https://image.tmdb.org/t/p/w342{{ $similar['poster_path'] }}"
@@ -250,12 +210,12 @@
                         @endif
                     @endforeach
                 </div>
-                <button class="carousel-button carousel-prev" data-carousel="similar-carousel">
+                <button class="absolute top-1/2 left-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="similar-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </button>
-                <button class="carousel-button carousel-next" data-carousel="similar-carousel">
+                <button class="absolute top-1/2 right-2.5 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer" data-carousel="similar-carousel">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
@@ -277,16 +237,16 @@
 <script>
     $(document).ready(function() {
         // カルーセルの設定
-        $('.carousel-container').each(function() {
+        $('.relative.overflow-hidden').each(function() {
             const container = $(this);
-            const items = container.find('.carousel-items');
+            const items = container.find('.flex.transition-transform');
             const itemWidth = 200; // 180px + 左右パディング20px
             const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
-            const totalItems = items.children().length;
+            const totalItems = items.children('.flex-none').length;
 
             // 初期状態でボタンの表示/非表示を設定
             if (totalItems <= visibleItems) {
-                container.find('.carousel-button').hide();
+                container.find('button').hide();
             }
 
             // カルーセルの現在位置
@@ -294,12 +254,12 @@
         });
 
         // 次へボタンのクリックイベント
-        $('.carousel-next').click(function() {
+        $('button:nth-child(3)').click(function() {
             const carouselId = $(this).data('carousel');
             const container = $('#' + carouselId);
-            const items = container.find('.carousel-items');
+            const items = container.find('.flex.transition-transform');
             const itemWidth = 200; // 180px + 左右パディング20px
-            const totalItems = items.children().length;
+            const totalItems = items.children('.flex-none').length;
             const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
             let position = container.data('position') || 0;
 
@@ -312,10 +272,10 @@
         });
 
         // 前へボタンのクリックイベント
-        $('.carousel-prev').click(function() {
+        $('button:nth-child(2)').click(function() {
             const carouselId = $(this).data('carousel');
             const container = $('#' + carouselId);
-            const items = container.find('.carousel-items');
+            const items = container.find('.flex.transition-transform');
             const itemWidth = 200; // 180px + 左右パディング20px
             const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
             let position = container.data('position') || 0;
@@ -330,12 +290,12 @@
 
         // ウィンドウリサイズ時の処理
         $(window).resize(function() {
-            $('.carousel-container').each(function() {
+            $('.relative.overflow-hidden').each(function() {
                 const container = $(this);
-                const items = container.find('.carousel-items');
+                const items = container.find('.flex.transition-transform');
                 const itemWidth = 200; // 180px + 左右パディング20px
                 const visibleItems = Math.floor((container.width() - 80) / itemWidth); // 80pxはボタン分の余白
-                const totalItems = items.children().length;
+                const totalItems = items.children('.flex-none').length;
                 let position = container.data('position') || 0;
 
                 // ポジションを再調整
@@ -348,9 +308,9 @@
 
                 // ボタンの表示/非表示を設定
                 if (totalItems <= visibleItems) {
-                    container.find('.carousel-button').hide();
+                    container.find('button').hide();
                 } else {
-                    container.find('.carousel-button').show();
+                    container.find('button').show();
                 }
             });
         });
