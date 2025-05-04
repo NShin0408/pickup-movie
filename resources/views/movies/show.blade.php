@@ -64,7 +64,7 @@
                 @php
                     $providers = $movie['watch/providers']['results']['JP'] ?? null;
                     $hasServices = (!empty($providers['flatrate']) || !empty($providers['rent']));
-                    $justwatchUrl = $providers['link'] ?? "https://www.justwatch.com/jp/映画/{$movie['id']}";
+                    $justWatchUrl = $providers['link'] ?? "https://www.justwatch.com/jp/映画/{$movie['id']}";
                 @endphp
 
                 @if($hasServices)
@@ -76,7 +76,7 @@
                                 <div class="text-base text-movie-gray mb-2.5">ストリーミング</div>
                                 <div class="flex flex-wrap gap-4">
                                     @foreach($providers['flatrate'] as $service)
-                                        <a href="{{ $justwatchUrl }}"
+                                        <a href="{{ $justWatchUrl }}"
                                            class="group relative w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service transition-all duration-300 hover:scale-110 hover:shadow-lg"
                                            target="_blank"
                                            title="{{ $service['provider_name'] }}で視聴する">
@@ -94,7 +94,7 @@
                                 <div class="text-base text-movie-gray mb-2.5">レンタル</div>
                                 <div class="flex flex-wrap gap-4">
                                     @foreach($providers['rent'] as $service)
-                                        <a href="{{ $justwatchUrl }}"
+                                        <a href="{{ $justWatchUrl }}"
                                            class="group relative w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service transition-all duration-300 hover:scale-110 hover:shadow-lg"
                                            target="_blank"
                                            title="{{ $service['provider_name'] }}でレンタルする">
