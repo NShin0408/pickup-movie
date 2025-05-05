@@ -115,6 +115,7 @@
             <h2 class="text-2xl mt-7 mb-4">トレーラー</h2>
             <div class="relative pb-[56.25%] h-0 overflow-hidden max-w-full mb-7 rounded-lg shadow-movie-trailer">
                 <iframe src="{{ $trailerUrl }}"
+                        referrerpolicy="strict-origin-when-cross-origin"
                         title="YouTube trailer"
                         allowfullscreen
                         loading="lazy"
