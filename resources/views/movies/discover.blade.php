@@ -118,5 +118,12 @@
         配信情報提供元: JustWatch
     </div>
 </div>
+<footer class="w-full text-center text-sm text-movie-muted mt-10 pt-10 border-t border-movie-panel">
+    <div class="flex justify-center gap-5">
+        <a href="/terms" class="hover:underline">利用規約</a>
+        <a href="/privacy" class="hover:underline">プライバシーポリシー</a>
+    </div>
+    <div class="mt-3">&copy; {{ date('Y') }} Pickup Movie</div>
+</footer>
 </body>
 </html>
