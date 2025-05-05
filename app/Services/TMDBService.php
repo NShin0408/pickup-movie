@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class TMDBService
 {
@@ -103,6 +104,15 @@ class TMDBService
     }
 
     /**
+     * キャッシュの有効期間を取得
+     */
+    private function getCacheDuration(string $type = 'daily'): \DateTime
+    {
+        $hours = config("services.tmdb.cache_durations.{$type}", 24);
+        return now()->addHours($hours);
+    }
+
+    /**
      * ポスターがある映画だけをフィルタリング
      */
     private function filterMoviesWithPosters(array $results, int $limit = 20): array
@@ -145,10 +155,12 @@ class TMDBService
     public function getPopularMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
-
-        return $this->fetchMovies('/movie/popular', $langParams, $streamingService, [
-            'sort_by' => 'popularity.desc'
-        ], $page);
+        $cacheKey = "tmdb_popular_{$selectedLanguage}_{$streamingService}_page{$page}";
+        return Cache::remember($cacheKey, $this->getCacheDuration('short'), function () use ($langParams, $streamingService, $page) {
+            return $this->fetchMovies('/movie/popular', $langParams, $streamingService, [
+                'sort_by' => 'popularity.desc'
+            ], $page);
+        });
     }
 
     /**
@@ -157,11 +169,13 @@ class TMDBService
     public function getTopRatedMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
-
-        return $this->fetchMovies('/movie/top_rated', $langParams, $streamingService, [
-            'sort_by' => 'vote_average.desc',
-            'vote_count.gte' => 100
-        ], $page);
+        $cacheKey = "tmdb_toprated_{$selectedLanguage}_{$streamingService}_page{$page}";
+        return Cache::remember($cacheKey, $this->getCacheDuration('long'), function () use ($langParams, $streamingService, $page) {
+            return $this->fetchMovies('/movie/top_rated', $langParams, $streamingService, [
+                'sort_by' => 'vote_average.desc',
+                'vote_count.gte' => 100
+            ], $page);
+        });
     }
 
     /**
@@ -174,12 +188,14 @@ class TMDBService
         // 現在の日付と1ヶ月前の日付を取得
         $now = date('Y-m-d');
         $oneMonthAgo = date('Y-m-d', strtotime('-1 month'));
-
-        return $this->fetchMovies('/movie/now_playing', $langParams, $streamingService, [
-            'sort_by' => 'release_date.desc',
-            'release_date.gte' => $oneMonthAgo,
-            'release_date.lte' => $now
-        ], $page);
+        $cacheKey = "tmdb_nowplaying_{$selectedLanguage}_{$streamingService}_page{$page}";
+        return Cache::remember($cacheKey, $this->getCacheDuration('medium'), function () use ($langParams, $streamingService, $page, $now, $oneMonthAgo) {
+            return $this->fetchMovies('/movie/now_playing', $langParams, $streamingService, [
+                'sort_by' => 'release_date.desc',
+                'release_date.gte' => $oneMonthAgo,
+                'release_date.lte' => $now
+            ], $page);
+        });
     }
 
     /**
@@ -217,13 +233,16 @@ class TMDBService
      */
     public function getMovieDetails(int $movieId): array
     {
-        $params = [
-            'language' => $this->defaultLanguage,
-            'append_to_response' => 'credits,similar,recommendations,videos,watch/providers'
-        ];
+        $cacheKey = "tmdb_movie_detail_{$movieId}";
+        return Cache::remember($cacheKey, $this->getCacheDuration('long'), function () use ($movieId) {
+            $params = [
+                'language' => $this->defaultLanguage,
+                'append_to_response' => 'credits,similar,recommendations,videos,watch/providers'
+            ];
 
-        $url = "/movie/" . $movieId;
-        return $this->makeApiRequest($url, $params);
+            $url = "/movie/" . $movieId;
+            return $this->makeApiRequest($url, $params);
+        });
     }
 
     /**
@@ -231,22 +250,25 @@ class TMDBService
      */
     public function getMovieVideos(int $movieId): array
     {
-        $params = [
-            'language' => $this->defaultLanguage,
-        ];
+        $cacheKey = "tmdb_movie_videos_{$movieId}";
+        return Cache::remember($cacheKey, $this->getCacheDuration('medium'), function () use ($movieId) {
+            $params = [
+                'language' => $this->defaultLanguage,
+            ];
 
-        $url = "/movie/" . $movieId . "/videos";
-        $response = $this->makeApiRequest($url, $params);
-        $videos = $response['results'] ?? [];
-
-        // 日本語のビデオがない場合は英語のビデオも取得
-        if (empty($videos) && $this->defaultLanguage !== 'en-US') {
-            $params['language'] = 'en-US';
+            $url = "/movie/" . $movieId . "/videos";
             $response = $this->makeApiRequest($url, $params);
             $videos = $response['results'] ?? [];
-        }
 
-        return $videos;
+            // 日本語がない場合は英語も取得
+            if (empty($videos) && $this->defaultLanguage !== 'en-US') {
+                $params['language'] = 'en-US';
+                $response = $this->makeApiRequest($url, $params);
+                $videos = $response['results'] ?? [];
+            }
+
+            return $videos;
+        });
     }
 
     /**
