@@ -6,7 +6,13 @@
     <meta name="movie-category" content="{{ $currentCategory }}">
     <meta name="movie-language" content="{{ $currentLanguage }}">
     <meta name="movie-streaming" content="{{ $currentStreaming }}">
-    <title>映画リスト</title>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico') }}">
+    <title>Pickup Movie</title>
     @if (app()->environment('development'))
         @vite(['resources/css/app.css', 'resources/js/app.ts'])
     @else
@@ -17,17 +23,19 @@
         <script type="module" src="{{ secure_asset('build/' . $manifest['resources/js/app.ts']['file']) }}"></script>
     @endif
 </head>
-<body class="bg-movie-dark text-movie-light font-sans p-5 w-full overflow-x-hidden">
+<body class="bg-movie-dark text-movie-light font-sans pt-3 pb-5 w-full overflow-x-hidden">
 <div class="max-w-[1200px] w-full mx-auto relative block">
-    <div class="mb-5 px-2.5 text-center w-full">
-        <h1 class="text-2xl font-medium mb-5">映画リスト</h1>
+    <div class="mb-3 px-2.5 text-center w-full">
+        <img src="{{ asset('images/logo.png') }}"
+             alt="Pickup Movie ロゴ"
+             class="mx-auto w-[180px] sm:w-[220px] md:w-[260px] h-auto">
     </div>
 
     <div class="w-full flex justify-center mb-7">
         <div class="w-[800px] max-w-full min-h-[220px]">
             <div class="block w-full">
                 <div class="mb-4 w-full text-center">
-                    <div class="text-sm text-movie-gray mb-2 text-center">カテゴリー</div>
+                    <div class="text-xs text-movie-gray mb-1 text-center">カテゴリー</div>
                     <div class="flex justify-center flex-wrap gap-2.5 mx-auto w-full">
                         <a href="/?category=popular&language={{ $currentLanguage }}&streaming={{ $currentStreaming }}"
                            class="py-2 px-4 bg-movie-panel rounded text-movie-light text-sm transition-colors inline-block
@@ -48,7 +56,7 @@
                 </div>
 
                 <div class="mb-4 w-full text-center">
-                    <div class="text-sm text-movie-gray mb-2 text-center">言語</div>
+                    <div class="text-xs text-movie-gray mb-1 text-center">言語</div>
                     <div class="flex justify-center flex-wrap gap-2.5 mx-auto w-full">
                         @foreach ($languages as $code => $name)
                             <a href="/?category={{ $currentCategory }}&language={{ $code }}&streaming={{ $currentStreaming }}"
@@ -61,7 +69,7 @@
                 </div>
 
                 <div class="mb-4 w-full text-center">
-                    <div class="text-sm text-movie-gray mb-2 text-center">配信サービス</div>
+                    <div class="text-xs text-movie-gray mb-1 text-center">配信サービス</div>
                     <div class="flex justify-center flex-wrap gap-2.5 mx-auto w-full">
                         @foreach ($streamingServices as $id => $name)
                             <a href="/?category={{ $currentCategory }}&language={{ $currentLanguage }}&streaming={{ $id }}"
