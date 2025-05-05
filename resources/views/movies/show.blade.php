@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     @if (app()->environment('development'))
         @vite(['resources/css/app.css', 'resources/js/app.ts'])

@@ -154,7 +154,6 @@ export class MovieCarousel {
 
     // スワイプ距離に基づいてページネーションを計算
     if (Math.abs(diffX) > 50) { // 一定以上のスワイプ距離でアクション
-      let position = parseInt(container.getAttribute('data-position') || '0');
       if (diffX < 0) {
         // 左へスワイプ（次のアイテムグループへ）
         this.moveNext(container);
@@ -164,7 +163,8 @@ export class MovieCarousel {
       }
     } else {
       // スワイプ距離が短い場合は現在位置に戻す
-      const position = parseInt(container.getAttribute('data-position') || '0');
+      const positionAttr = container.getAttribute('data-position');
+      const position = Number.isFinite(Number(positionAttr)) ? parseInt(positionAttr as string, 10) : 0;
       itemsContainer.style.transform = `translateX(-${position * itemWidth}px)`;
     }
   }
@@ -181,7 +181,8 @@ export class MovieCarousel {
         ? Math.floor((container.clientWidth - 60) / itemWidth)
         : Math.floor((container.clientWidth - 30) / itemWidth);
 
-    let position = parseInt(container.getAttribute('data-position') || '0');
+    const positionAttr = container.getAttribute('data-position');
+    let position = Number.isFinite(Number(positionAttr)) ? parseInt(positionAttr as string, 10) : 0;
 
     // 次のポジションを計算（最大値を超えないようにする）
     position = Math.min(position + visibleItems, totalItems - visibleItems);
@@ -208,7 +209,8 @@ export class MovieCarousel {
         ? Math.floor((container.clientWidth - 60) / itemWidth)
         : Math.floor((container.clientWidth - 30) / itemWidth);
 
-    let position = parseInt(container.getAttribute('data-position') || '0');
+    const positionAttr = container.getAttribute('data-position');
+    let position = Number.isFinite(Number(positionAttr)) ? parseInt(positionAttr as string, 10) : 0;
 
     // 前のポジションを計算（0未満にならないようにする）
     position = Math.max(position - visibleItems, 0);
@@ -258,7 +260,8 @@ export class MovieCarousel {
           : Math.floor((container.clientWidth - 30) / itemWidth);
       const totalItems = itemElements.length;
 
-      let position = parseInt(container.getAttribute('data-position') || '0');
+      const positionAttr = container.getAttribute('data-position');
+      let position = Number.isFinite(Number(positionAttr)) ? parseInt(positionAttr as string, 10) : 0;
 
       // ポジションを再調整
       position = Math.min(position, totalItems - visibleItems);

@@ -27,6 +27,22 @@ class MovieController extends Controller
         $language = $request->query('language', 'all');
         $streamingService = $request->query('streaming', 'all');
 
+        $allowedCategories = ['popular', 'top_rated', 'now_playing'];
+        $allowedLanguages = array_keys(TMDBService::$languages);
+        $allowedStreamings = array_keys(TMDBService::$streamingServices);
+
+        if (!in_array($category, $allowedCategories)) {
+            abort(400, 'Invalid category');
+        }
+
+        if ($language !== 'all' && !in_array($language, $allowedLanguages)) {
+            abort(400, 'Invalid language');
+        }
+
+        if ($streamingService !== 'all' && !in_array($streamingService, $allowedStreamings)) {
+            abort(400, 'Invalid streaming service');
+        }
+
         $movies = $this->getMoviesByCategory($category, $language, $streamingService);
 
         return view('movies.discover', [
@@ -48,6 +64,22 @@ class MovieController extends Controller
         $language = $request->query('language', 'all');
         $streamingService = $request->query('streaming', 'all');
         $page = (int)$request->query('page', 2); // デフォルトは2ページ目から
+
+        $allowedCategories = ['popular', 'top_rated', 'now_playing'];
+        $allowedLanguages = array_keys(TMDBService::$languages);
+        $allowedStreamings = array_keys(TMDBService::$streamingServices);
+
+        if (!in_array($category, $allowedCategories)) {
+            abort(400, 'Invalid category');
+        }
+
+        if ($language !== 'all' && !in_array($language, $allowedLanguages)) {
+            abort(400, 'Invalid language');
+        }
+
+        if ($streamingService !== 'all' && !in_array($streamingService, $allowedStreamings)) {
+            abort(400, 'Invalid streaming service');
+        }
 
         $movies = $this->getMoviesByCategory($category, $language, $streamingService, $page);
 

@@ -7,6 +7,8 @@
     <meta name="movie-language" content="{{ $currentLanguage }}">
     <meta name="movie-streaming" content="{{ $currentStreaming }}">
     <title>Pickup Movie</title>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
     @if (app()->environment('development'))
         @vite(['resources/css/app.css', 'resources/js/app.ts'])
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
