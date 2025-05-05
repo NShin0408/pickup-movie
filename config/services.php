@@ -37,5 +37,10 @@ return [
 
     'tmdb' => [
         'api_key' => env('TMDB_API_KEY'),
+        'cache_durations' => [
+            'short' => env('TMDB_CACHE_SHORT', 3),
+            'medium' => env('TMDB_CACHE_MEDIUM', 6),
+            'long' => env('TMDB_CACHE_LONG', 12),
+        ],
     ],
 ];
