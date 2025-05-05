@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <title>プライバシーポリシー | Pickup Movie</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @vite(['resources/css/app.css'])
+    @if (app()->environment('development'))
+        @vite(['resources/css/app.css'])
+    @else
+        @php
+            $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+        @endphp
+        <link rel="stylesheet" href="{{ secure_asset('build/' . $manifest['resources/css/app.css']['file']) }}">
+    @endif
 </head>
 <body class="bg-movie-dark text-movie-light font-sans p-5">
 <div class="max-w-[800px] mx-auto">
