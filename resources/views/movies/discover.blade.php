@@ -26,9 +26,12 @@
 <body class="bg-movie-dark text-movie-light font-sans px-3 sm:px-5 pt-3 pb-5 w-full overflow-x-hidden">
 <div class="max-w-[1200px] w-full mx-auto relative block">
     <div class="mb-3 px-2.5 text-center w-full">
-        <img src="{{ asset('images/logo.png') }}"
-             alt="Pickup Movie ロゴ"
-             class="mx-auto w-[180px] sm:w-[220px] md:w-[260px] h-auto">
+        <picture>
+            <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
+            <img src="{{ asset('images/logo.png') }}"
+                 alt="Pickup Movie ロゴ"
+                 class="mx-auto w-[180px] sm:w-[220px] md:w-[260px] h-auto">
+        </picture>
     </div>
 
     <div class="w-full flex justify-center mb-7">
