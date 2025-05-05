@@ -27,10 +27,17 @@
 <div class="max-w-[1200px] w-full mx-auto relative block">
     <div class="mb-3 px-2.5 text-center w-full">
         <picture>
-            <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
-            <img src="{{ asset('images/logo.png') }}"
-                 alt="Pickup Movie ロゴ"
-                 class="mx-auto w-[180px] sm:w-[220px] md:w-[260px] h-auto">
+            @if (app()->environment('development'))
+                <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
+                <img src="{{ asset('images/logo.png') }}"
+                     alt="Pickup Movie ロゴ"
+                     class="mx-auto w-[180px] sm:w-[220px] md:w-[260px] h-auto">
+            @else
+                <source srcset="{{ secure_asset('images/logo.webp') }}" type="image/webp">
+                <img src="{{ secure_asset('images/logo.png') }}"
+                     alt="Pickup Movie ロゴ"
+                     class="mx-auto w-[180px] sm:w-[220px] md:w-[260px] h-auto">
+            @endif
         </picture>
     </div>
 
