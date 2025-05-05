@@ -23,7 +23,7 @@
         <script type="module" src="{{ secure_asset('build/' . $manifest['resources/js/app.ts']['file']) }}"></script>
     @endif
 </head>
-<body class="bg-movie-dark text-movie-light font-sans pt-3 pb-5 w-full overflow-x-hidden">
+<body class="bg-movie-dark text-movie-light font-sans px-3 sm:px-5 pt-3 pb-5 w-full overflow-x-hidden">
 <div class="max-w-[1200px] w-full mx-auto relative block">
     <div class="mb-3 px-2.5 text-center w-full">
         <img src="{{ asset('images/logo.png') }}"
