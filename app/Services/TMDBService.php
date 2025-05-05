@@ -72,7 +72,6 @@ class TMDBService
         }
 
         $langCode = $parts[0]; // ja
-        $countryCode = $parts[1]; // JP
 
         return [
             // APIリクエスト用にアンダースコア形式に変換（ja-JP）
@@ -92,7 +91,8 @@ class TMDBService
         // アダルトコンテンツは常に除外
         $params['include_adult'] = false;
 
-        $response = Http::get("{$this->baseUrl}{$endpoint}", $params);
+        $url = $this->baseUrl . $endpoint;
+        $response = Http::get($url, $params);
 
         if (!$response->successful()) {
             // ログに記録したり、例外を投げたりすることもできます
@@ -222,7 +222,8 @@ class TMDBService
             'append_to_response' => 'credits,similar,recommendations,videos,watch/providers'
         ];
 
-        return $this->makeApiRequest("/movie/{$movieId}", $params);
+        $url = "/movie/" . $movieId;
+        return $this->makeApiRequest($url, $params);
     }
 
     /**
@@ -234,13 +235,14 @@ class TMDBService
             'language' => $this->defaultLanguage,
         ];
 
-        $response = $this->makeApiRequest("/movie/{$movieId}/videos", $params);
+        $url = "/movie/" . $movieId . "/videos";
+        $response = $this->makeApiRequest($url, $params);
         $videos = $response['results'] ?? [];
 
         // 日本語のビデオがない場合は英語のビデオも取得
         if (empty($videos) && $this->defaultLanguage !== 'en-US') {
             $params['language'] = 'en-US';
-            $response = $this->makeApiRequest("/movie/{$movieId}/videos", $params);
+            $response = $this->makeApiRequest($url, $params);
             $videos = $response['results'] ?? [];
         }
 
@@ -291,7 +293,7 @@ class TMDBService
      */
     public function getYoutubeEmbedUrl(string $youtubeKey): string
     {
-        return "https://www.youtube.com/embed/{$youtubeKey}";
+        return "https://www.youtube.com/embed/" . $youtubeKey;
     }
 
     /**
