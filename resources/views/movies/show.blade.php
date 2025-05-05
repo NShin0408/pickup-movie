@@ -103,6 +103,7 @@
                 <iframe src="{{ $trailerUrl }}"
                         title="YouTube trailer"
                         allowfullscreen
+                        loading="lazy"
                         class="absolute top-0 left-0 w-full h-full border-none"></iframe>
             </div>
         @endif
