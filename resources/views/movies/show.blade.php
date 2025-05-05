@@ -81,39 +81,11 @@
                         <h2 class="text-2xl mt-7 mb-4">配信サービス</h2>
 
                         @if(!empty($providers['flatrate']))
-                            <div class="mb-5">
-                                <div class="text-base text-movie-gray mb-2.5">ストリーミング</div>
-                                <div class="flex flex-wrap gap-4">
-                                    @foreach($providers['flatrate'] as $service)
-                                        <a href="{{ $justWatchUrl }}"
-                                           class="group relative w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service transition-all duration-300 hover:scale-110 hover:shadow-lg"
-                                           target="_blank"
-                                           title="{{ $service['provider_name'] }}で視聴する">
-                                            <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
-                                                 alt="{{ $service['provider_name'] }}"
-                                                 class="w-full h-full object-cover">
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
+                            <x-streaming-services title="ストリーミング" :services="$providers['flatrate']" :link="$justWatchUrl" />
                         @endif
 
                         @if(!empty($providers['rent']))
-                            <div class="mb-5">
-                                <div class="text-base text-movie-gray mb-2.5">レンタル</div>
-                                <div class="flex flex-wrap gap-4">
-                                    @foreach($providers['rent'] as $service)
-                                        <a href="{{ $justWatchUrl }}"
-                                           class="group relative w-[60px] h-[60px] rounded-xl overflow-hidden shadow-movie-service transition-all duration-300 hover:scale-110 hover:shadow-lg"
-                                           target="_blank"
-                                           title="{{ $service['provider_name'] }}でレンタルする">
-                                            <img src="https://image.tmdb.org/t/p/original{{ $service['logo_path'] }}"
-                                                 alt="{{ $service['provider_name'] }}"
-                                                 class="w-full h-full object-cover">
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
+                            <x-streaming-services title="レンタル" :services="$providers['rent']" :link="$justWatchUrl" />
                         @endif
                     </div>
                 @else
@@ -135,124 +107,16 @@
             </div>
         @endif
 
-        <!-- 同じ監督の他作品セクション -->
         @if(!empty($director) && !empty($directorMovies))
-            <h2 class="text-2xl mt-7 mb-4">{{ $director['name'] }} 監督の映画</h2>
-            <div class="relative overflow-hidden py-1.5 sm:py-2 sm:pr-2 touch-pan-x" id="director-carousel">
-                <div class="flex transition-transform duration-500 ease-in-out px-1">
-                    @foreach($directorMovies as $directorMovie)
-                        @if(!empty($directorMovie['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1 sm:px-2 md:px-3"
-                                 onclick="window.location.href='/movies/{{ $directorMovie['id'] }}'">
-                                <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
-                                    <img src="https://image.tmdb.org/t/p/w342{{ $directorMovie['poster_path'] }}"
-                                         alt="{{ $directorMovie['title'] }}"
-                                         class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
-                                    <div class="movie-title-overlay">
-                                        {{ $directorMovie['title'] }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-                <button
-                    class="absolute top-1/2 left-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
-                    data-carousel="director-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                         stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-                    </svg>
-                </button>
-                <button
-                    class="absolute top-1/2 right-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
-                    data-carousel="director-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                         stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                    </svg>
-                </button>
-            </div>
+            <x-movie-carousel title="{{ $director['name'] }} 監督の映画" :movies="$directorMovies" carouselId="director-carousel" />
         @endif
 
-        <!-- おすすめ映画セクション -->
         @if(!empty($movie['recommendations']['results']))
-            <h2 class="text-2xl mt-7 mb-4">おすすめ映画</h2>
-            <div class="relative overflow-hidden py-1.5 sm:py-2 sm:pr-2 touch-pan-x" id="recommendations-carousel">
-                <div class="flex transition-transform duration-500 ease-in-out px-1">
-                    @foreach(array_slice($movie['recommendations']['results'], 0, 10) as $recommended)
-                        @if(!empty($recommended['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1 sm:px-2 md:px-3"
-                                 onclick="window.location.href='/movies/{{ $recommended['id'] }}'">
-                                <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
-                                    <img src="https://image.tmdb.org/t/p/w342{{ $recommended['poster_path'] }}"
-                                         alt="{{ $recommended['title'] }}"
-                                         class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
-                                    <div class="movie-title-overlay">
-                                        {{ $recommended['title'] }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-                <button
-                    class="absolute top-1/2 left-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
-                    data-carousel="recommendations-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                         stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-                    </svg>
-                </button>
-                <button
-                    class="absolute top-1/2 right-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
-                    data-carousel="recommendations-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                         stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                    </svg>
-                </button>
-            </div>
+            <x-movie-carousel title="おすすめ映画" :movies="array_slice($movie['recommendations']['results'], 0, 10)" carouselId="recommendations-carousel" />
         @endif
 
-        <!-- 関連映画セクション -->
         @if(!empty($movie['similar']['results']))
-            <h2 class="text-2xl mt-7 mb-4">関連映画</h2>
-            <div class="relative overflow-hidden py-1.5 sm:py-2 sm:pr-2 touch-pan-x" id="similar-carousel">
-                <div class="flex transition-transform duration-500 ease-in-out px-1">
-                    @foreach(array_slice($movie['similar']['results'], 0, 10) as $similar)
-                        @if(!empty($similar['poster_path']))
-                            <div class="flex-none w-[calc(25%+5px)] sm:w-[190px] cursor-pointer px-1 sm:px-2 md:px-3"
-                                 onclick="window.location.href='/movies/{{ $similar['id'] }}'">
-                                <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
-                                    <img src="https://image.tmdb.org/t/p/w342{{ $similar['poster_path'] }}"
-                                         alt="{{ $similar['title'] }}"
-                                         class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
-                                    <div class="movie-title-overlay">
-                                        {{ $similar['title'] }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-                <button
-                    class="absolute top-1/2 left-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
-                    data-carousel="similar-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                         stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-                    </svg>
-                </button>
-                <button
-                    class="absolute top-1/2 right-1 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center z-10 border-none text-white cursor-pointer hidden md:flex"
-                    data-carousel="similar-carousel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                         stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                    </svg>
-                </button>
-            </div>
+            <x-movie-carousel title="関連映画" :movies="array_slice($movie['similar']['results'], 0, 10)" carouselId="similar-carousel" />
         @endif
 
         <div class="w-full text-xs text-movie-muted text-center mt-7 pt-5 border-t border-movie-panel">
