@@ -6,21 +6,25 @@
     <meta name="movie-category" content="{{ $currentCategory }}">
     <meta name="movie-language" content="{{ $currentLanguage }}">
     <meta name="movie-streaming" content="{{ $currentStreaming }}">
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico') }}">
     <title>Pickup Movie</title>
     @if (app()->environment('development'))
         @vite(['resources/css/app.css', 'resources/js/app.ts'])
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico') }}">
     @else
         @php
             $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
         @endphp
         <link rel="stylesheet" href="{{ secure_asset('build/' . $manifest['resources/css/app.css']['file']) }}">
         <script type="module" src="{{ secure_asset('build/' . $manifest['resources/js/app.ts']['file']) }}"></script>
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ secure_asset('favicon/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ secure_asset('favicon/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ secure_asset('favicon/site.webmanifest') }}">
+        <link rel="shortcut icon" href="{{ secure_asset('favicon/favicon.ico') }}">
     @endif
 </head>
 <body class="bg-movie-dark text-movie-light font-sans px-3 sm:px-5 pt-3 pb-5 w-full overflow-x-hidden">
