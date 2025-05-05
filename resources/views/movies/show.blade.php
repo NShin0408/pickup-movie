@@ -25,7 +25,7 @@
 
     @if(!empty($movie))
         <div class="flex flex-wrap gap-7 mb-7">
-            <div class="flex-none w-[300px] md:w-[300px] w-full px-0">
+            <div class="flex-none md:w-[300px] w-full px-0">
                 @if(!empty($movie['poster_path']))
                     <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
                          alt="{{ $movie['title'] }}"
