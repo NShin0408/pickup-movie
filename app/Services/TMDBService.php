@@ -293,7 +293,7 @@ class TMDBService
      */
     public function getYoutubeEmbedUrl(string $youtubeKey): string
     {
-        return "https://www.youtube.com/embed/" . $youtubeKey;
+        return "https://www.youtube-nocookie.com/embed/" . $youtubeKey;
     }
 
     /**
