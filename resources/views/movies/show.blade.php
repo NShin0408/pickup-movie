@@ -28,7 +28,7 @@
             <div class="flex-none md:w-[300px] w-full px-0">
                 @if(!empty($movie['poster_path']))
                     <img
-                        src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
+                        src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
                         alt="{{ $movie['title'] }}"
                         class="w-full rounded-lg shadow-movie-trailer sm:max-w-[300px] mx-auto sm:mx-0"
                         loading="lazy"

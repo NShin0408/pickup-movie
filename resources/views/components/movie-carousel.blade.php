@@ -11,7 +11,9 @@
                         <div class="relative transition-transform duration-200 hover:scale-105 movie-item">
                             <img src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
                                  alt="{{ $movie['title'] }}"
-                                 class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster">
+                                 class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
+                                 loading="lazy"
+                            >
                             <div class="movie-title-overlay">
                                 {{ $movie['title'] }}
                             </div>
