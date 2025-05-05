@@ -103,6 +103,13 @@
                             <div class="relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item" data-id="{{ $movie['id'] }}">
                                 <img
                                     src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
+                                    srcset="
+                                        https://image.tmdb.org/t/p/w154{{ $movie['poster_path'] }} 154w,
+                                        https://image.tmdb.org/t/p/w185{{ $movie['poster_path'] }} 185w,
+                                        https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }} 342w,
+                                        https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }} 500w
+                                    "
+                                    sizes="(max-width: 640px) 154px, (max-width: 768px) 185px, (max-width: 1024px) 300px, 300px"
                                     alt="{{ $movie['title'] }}"
                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
                                     loading="lazy"
