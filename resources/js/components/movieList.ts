@@ -9,7 +9,6 @@ export class MovieList {
   private readonly streaming: string;
   private readonly movieGridSelector: string = '#movie-grid';
   private readonly loadingSelector: string = '#loading';
-  private readonly loadMoreBtnSelector: string = '#load-more-btn';
 
   constructor(options: {
     category: string;
@@ -24,12 +23,6 @@ export class MovieList {
   }
 
   private init(): void {
-    // もっと見るボタンのクリックイベント
-    const loadMoreBtn = document.querySelector(this.loadMoreBtnSelector);
-    if (loadMoreBtn) {
-      loadMoreBtn.addEventListener('click', this.loadMoreMovies.bind(this));
-    }
-
     // 映画アイテムのクリックイベント
     document.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -55,14 +48,9 @@ export class MovieList {
 
     // ローディング表示
     const loading = document.querySelector(this.loadingSelector);
-    const loadMoreBtn = document.querySelector(this.loadMoreBtnSelector);
 
     if (loading) {
       loading.classList.remove('hidden');
-    }
-
-    if (loadMoreBtn) {
-      loadMoreBtn.classList.add('hidden');
     }
 
     // Fetch APIでリクエスト
@@ -88,15 +76,6 @@ export class MovieList {
         // ローディング非表示
         if (loading) {
           loading.classList.add('hidden');
-        }
-
-        // もっと見るボタンの表示/非表示
-        if (loadMoreBtn) {
-          if (this.hasMore) {
-            loadMoreBtn.classList.remove('hidden');
-          } else {
-            loadMoreBtn.classList.add('hidden');
-          }
         }
 
         this.isLoading = false;

@@ -126,10 +126,6 @@
                 <div class="text-center p-5 mt-5 hidden" id="loading">
                     <div class="inline-block w-[30px] h-[30px] border-3 border-movie-panel rounded-full border-t-movie-light spin-animation"></div>
                 </div>
-
-                <button class="block mx-auto my-5 py-3 px-6 bg-movie-panel-hover text-movie-light border-none rounded cursor-pointer text-base transition-colors hover:bg-movie-panel-active" id="load-more-btn">
-                    もっと見る
-                </button>
             @else
                 <div class="w-full max-w-[600px] mx-auto text-center py-12 text-movie-gray text-base bg-movie-panel/20 rounded-lg">
                     <p>条件に一致する映画が見つかりませんでした</p>
