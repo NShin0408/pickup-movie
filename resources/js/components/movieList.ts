@@ -134,8 +134,11 @@ export class MovieList {
   private handleScroll(): void {
     if (this.isLoading || !this.hasMore) return;
 
-    // ページ下部に到達したかチェック
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+    // ページの80%を超えたらロードを実行
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const threshold = document.body.scrollHeight * 0.8;
+
+    if (scrollPosition >= threshold) {
       this.loadMoreMovies();
     }
   }
