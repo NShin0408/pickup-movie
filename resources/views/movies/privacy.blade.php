@@ -26,6 +26,9 @@
     <h2 class="text-xl font-semibold mt-6 mb-2">アクセス解析・トラッキング</h2>
     <p class="mb-4">CookieやGoogle Analytics等のトラッキング技術は使用しておりません。</p>
 
+    <h2 class="text-xl font-semibold mt-6 mb-2">第三者サービスによるCookie</h2>
+    <p class="mb-4">本サービスではCookieを利用していませんが、YouTubeなどの外部コンテンツの埋め込みにより、第三者によってCookieが発行される場合があります。これにより、外部サービス側でトラッキング等が行われる可能性がありますので、各サービスのプライバシーポリシーをご確認ください。</p>
+
     <h2 class="text-xl font-semibold mt-6 mb-2">外部サービスとの連携</h2>
     <p class="mb-4">映画情報および配信情報は、TMDbおよびJustWatchのAPIを通じて取得しています。これらのサービスに関しては各提供元のプライバシーポリシーをご確認ください。</p>
 
