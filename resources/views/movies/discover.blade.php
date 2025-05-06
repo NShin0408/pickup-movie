@@ -8,6 +8,7 @@
     <meta name="movie-streaming" content="{{ $currentStreaming }}">
     <title>Pickup Movie</title>
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="「フランス語の映画だけ観たい…」そんな声に応える、“言語”で探せる映画検索サービス。NetflixやU-NEXTなど配信サービス別に探せます。">
 
     @if (app()->environment('development'))
         @vite(['resources/css/app.css', 'resources/js/app.ts'])

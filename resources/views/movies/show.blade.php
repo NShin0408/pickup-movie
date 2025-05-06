@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $movie['title'] ?? '映画詳細' }}</title>
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="{{ $movie['title'] }}の詳細情報。監督・ジャンル・配信サービス・トレーラーまで。言語別に探せる映画検索サービスです。">
 
     @if (app()->environment('development'))
         @vite(['resources/css/app.css', 'resources/js/app.ts'])
