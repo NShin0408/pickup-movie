@@ -9,6 +9,7 @@ export class MovieList {
   private readonly streaming: string;
   private readonly movieGridSelector: string = '#movie-grid';
   private readonly loadingSelector: string = '#loading';
+  private scrollTriggerCount: number = 0;
 
   constructor(options: {
     category: string;
@@ -111,11 +112,13 @@ export class MovieList {
   }
 
   private handleScroll(): void {
+    this.scrollTriggerCount++;
     if (this.isLoading || !this.hasMore) return;
 
-    // ページの80%を超えたらロードを実行
+    // ページの閾値を超えたらロードを実行
     const scrollPosition = window.scrollY + window.innerHeight;
-    const threshold = document.body.scrollHeight * 0.8;
+    const baseThreshold = this.scrollTriggerCount < 2 ? 0.5 : (this.scrollTriggerCount < 3 ? 0.6 : 0.8);
+    const threshold = document.body.scrollHeight * baseThreshold;
 
     if (scrollPosition >= threshold) {
       this.loadMoreMovies();
