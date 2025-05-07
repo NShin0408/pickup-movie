@@ -49,6 +49,21 @@ class TMDBService
         }
     }
 
+    private function getCache(string $key): mixed
+    {
+        if (cache()->has($key)) {
+            logger()->info("Cache HIT for key: {$key}");
+            return cache()->get($key);
+        }
+        return null;
+    }
+
+    private function setCache(string $key, mixed $value, int $ttl = 21600): void // デフォルト6時間
+    {
+        logger()->info("Set cache for key: {$key}");
+        cache()->put($key, $value, $ttl);
+    }
+
     /**
      * 選択された言語から表示言語と原語のパラメータを取得
      */
@@ -145,10 +160,20 @@ class TMDBService
     public function getPopularMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
+        $cacheKey = "popular_{$selectedLanguage}_{$streamingService}_{$page}";
 
-        return $this->fetchMovies('/movie/popular', $langParams, $streamingService, [
+        logger()->info("Trying cache key: {$cacheKey}");
+        $cached = $this->getCache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $result = $this->fetchMovies('/movie/popular', $langParams, $streamingService, [
             'sort_by' => 'popularity.desc'
         ], $page);
+
+        $this->setCache($cacheKey, $result);
+        return $result;
     }
 
     /**
@@ -157,11 +182,20 @@ class TMDBService
     public function getTopRatedMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
+        $cacheKey = "top_rated_{$selectedLanguage}_{$streamingService}_{$page}";
 
-        return $this->fetchMovies('/movie/top_rated', $langParams, $streamingService, [
+        $cached = $this->getCache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $result = $this->fetchMovies('/movie/top_rated', $langParams, $streamingService, [
             'sort_by' => 'vote_average.desc',
             'vote_count.gte' => 100
         ], $page);
+
+        $this->setCache($cacheKey, $result);
+        return $result;
     }
 
     /**
@@ -171,15 +205,24 @@ class TMDBService
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
 
+        $cacheKey = "now_playing_{$selectedLanguage}_{$streamingService}_{$page}";
+        $cached = $this->getCache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
         // 現在の日付と1ヶ月前の日付を取得
         $now = date('Y-m-d');
         $oneMonthAgo = date('Y-m-d', strtotime('-1 month'));
 
-        return $this->fetchMovies('/movie/now_playing', $langParams, $streamingService, [
+        $result = $this->fetchMovies('/movie/now_playing', $langParams, $streamingService, [
             'sort_by' => 'release_date.desc',
             'release_date.gte' => $oneMonthAgo,
             'release_date.lte' => $now
         ], $page);
+
+        $this->setCache($cacheKey, $result);
+        return $result;
     }
 
     /**
