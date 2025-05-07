@@ -260,13 +260,22 @@ class TMDBService
      */
     public function getMovieDetails(int $movieId): array
     {
+        $cacheKey = "movie_details_{$movieId}";
+        $cached = $this->getCache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $params = [
             'language' => $this->defaultLanguage,
             'append_to_response' => 'credits,similar,recommendations,videos,watch/providers'
         ];
 
         $url = "/movie/" . $movieId;
-        return $this->makeApiRequest($url, $params);
+        $result = $this->makeApiRequest($url, $params);
+
+        $this->setCache($cacheKey, $result);
+        return $result;
     }
 
     /**
@@ -274,6 +283,12 @@ class TMDBService
      */
     public function getMovieVideos(int $movieId): array
     {
+        $cacheKey = "movie_videos_{$movieId}";
+        $cached = $this->getCache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $params = [
             'language' => $this->defaultLanguage,
         ];
@@ -289,6 +304,7 @@ class TMDBService
             $videos = $response['results'] ?? [];
         }
 
+        $this->setCache($cacheKey, $videos);
         return $videos;
     }
 
@@ -344,6 +360,12 @@ class TMDBService
      */
     public function getDirectorMovies(int $directorId, int $excludeMovieId = null, int $limit = 10): array
     {
+        $cacheKey = "director_movies_{$directorId}_{$excludeMovieId}_{$limit}";
+        $cached = $this->getCache($cacheKey);
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $params = [
             'language' => $this->defaultLanguage,
             'with_crew' => $directorId,
@@ -360,7 +382,9 @@ class TMDBService
             });
         }
 
-        return $this->filterMoviesWithPosters($results, $limit);
+        $results = $this->filterMoviesWithPosters($results, $limit);
+        $this->setCache($cacheKey, $results);
+        return $results;
     }
 
     /**
