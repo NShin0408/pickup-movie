@@ -134,7 +134,7 @@ class TMDBService
     /**
      * 映画情報を取得する共通メソッド
      */
-    private function fetchMovies(string $endpoint, array $langParams, ?string $streamingService = null, array $additionalParams = [], int $page = 1): array
+    private function fetchMovies(string $endpoint, array $langParams, string $streamingService, array $additionalParams = [], int $page = 1): array
     {
         // 配信サービスの指定または言語フィルタがある場合はdiscoverエンドポイントを使用
         if (($streamingService && $streamingService !== 'all') || $langParams['original_language']) {
@@ -157,7 +157,7 @@ class TMDBService
     /**
      * 人気映画を取得
      */
-    public function getPopularMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
+    public function getPopularMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
         $cacheKey = "popular_{$selectedLanguage}_{$streamingService}_{$page}";
@@ -179,7 +179,7 @@ class TMDBService
     /**
      * 高評価映画を取得
      */
-    public function getTopRatedMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
+    public function getTopRatedMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
         $cacheKey = "top_rated_{$selectedLanguage}_{$streamingService}_{$page}";
@@ -201,7 +201,7 @@ class TMDBService
     /**
      * 上映中の映画を取得
      */
-    public function getNowPlayingMovies(?string $selectedLanguage = null, ?string $streamingService = null, int $page = 1): array
+    public function getNowPlayingMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
 

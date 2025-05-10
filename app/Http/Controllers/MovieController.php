@@ -123,7 +123,7 @@ class MovieController extends Controller
     /**
      * カテゴリに基づいて映画を取得する
      */
-    private function getMoviesByCategory(string $category, ?string $language, ?string $streamingService, int $page = 1): array
+    private function getMoviesByCategory(string $category, string $language, string $streamingService, int $page = 1): array
     {
         return match ($category) {
             'top_rated' => $this->tmdbService->getTopRatedMovies($language, $streamingService, $page),
