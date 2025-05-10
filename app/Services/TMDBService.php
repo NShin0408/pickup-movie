@@ -311,12 +311,12 @@ class TMDBService
     /**
      * 公式トレーラーやティーザーを優先して返す
      */
-    public function getOfficialTrailer(int $movieId): ?array
+    public function getOfficialTrailer(int $movieId): array
     {
         $videos = $this->getMovieVideos($movieId);
 
         if (empty($videos)) {
-            return null;
+            return [];
         }
 
         // タイプと名前でフィルタリング (優先順位順)
@@ -344,7 +344,7 @@ class TMDBService
             return reset($youtubeVideos);
         }
 
-        return null;
+        return [];
     }
 
     /**
@@ -390,10 +390,10 @@ class TMDBService
     /**
      * 映画から監督情報を取得
      */
-    public function getDirectorFromMovie(array $movie): ?array
+    public function getDirectorFromMovie(array $movie): array
     {
         if (empty($movie['credits']['crew'])) {
-            return null;
+            return [];
         }
 
         $directors = array_filter($movie['credits']['crew'], function($crewMember) {
@@ -401,7 +401,7 @@ class TMDBService
         });
 
         if (empty($directors)) {
-            return null;
+            return [];
         }
 
         // 最初の監督を返す

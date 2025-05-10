@@ -104,7 +104,7 @@ class MovieController extends Controller
 
         if (!empty($movie)) {
             $trailer = $tmdbService->getOfficialTrailer($id);
-            if ($trailer) {
+            if (!empty($trailer)) {
                 $trailerUrl = $tmdbService->getYoutubeEmbedUrl($trailer['key']);
             }
 
@@ -112,7 +112,7 @@ class MovieController extends Controller
             $director = $tmdbService->getDirectorFromMovie($movie);
 
             // 監督の他の作品を取得
-            if ($director) {
+            if (!empty($director)) {
                 $directorMovies = $tmdbService->getDirectorMovies($director['id'], $movie['id']);
             }
         }
