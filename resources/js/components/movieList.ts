@@ -117,7 +117,7 @@ export class MovieList {
 
     // ページの閾値を超えたらロードを実行
     const scrollPosition = window.scrollY + window.innerHeight;
-    const baseThreshold = this.scrollTriggerCount < 2 ? 0.5 : (this.scrollTriggerCount < 3 ? 0.6 : 0.8);
+    const baseThreshold = this.scrollTriggerCount < 3 ? 0.45 : (this.scrollTriggerCount < 6 ? 0.5 : 0.8);
     const threshold = document.body.scrollHeight * baseThreshold;
 
     if (scrollPosition >= threshold) {
