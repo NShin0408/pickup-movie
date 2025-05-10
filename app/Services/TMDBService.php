@@ -58,10 +58,10 @@ class TMDBService
         return null;
     }
 
-    private function setCache(string $key, mixed $value, int $ttl = 21600): void // デフォルト6時間
+    private function setCache(string $key, mixed $value): void // デフォルト6時間
     {
         logger()->info("Set cache for key: {$key}");
-        cache()->put($key, $value, $ttl);
+        cache()->put($key, $value, 21600);
     }
 
     /**
