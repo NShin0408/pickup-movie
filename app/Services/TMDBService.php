@@ -58,7 +58,7 @@ class TMDBService
     private function getCache(string $key): mixed
     {
         if (cache()->has($key)) {
-            logger()->info("Cache HIT for key: {$key}");
+            logger()->info("Cache HIT for key: $key");
             return cache()->get($key);
         }
         return null;
@@ -66,7 +66,7 @@ class TMDBService
 
     private function setCache(string $key, mixed $value): void // デフォルト6時間
     {
-        logger()->info("Set cache for key: {$key}");
+        logger()->info("Set cache for key: $key");
         cache()->put($key, $value, 21600);
     }
 
@@ -166,9 +166,9 @@ class TMDBService
     public function getPopularMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
-        $cacheKey = "popular_{$selectedLanguage}_{$streamingService}_{$page}";
+        $cacheKey = "popular_" . $selectedLanguage . "_" . $streamingService . "_" . $page;
 
-        logger()->info("Trying cache key: {$cacheKey}");
+        logger()->info("Trying cache key: $cacheKey");
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
@@ -188,7 +188,7 @@ class TMDBService
     public function getTopRatedMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
-        $cacheKey = "top_rated_{$selectedLanguage}_{$streamingService}_{$page}";
+        $cacheKey = "top_rated_" . $selectedLanguage . "_" . $streamingService . "_" . $page;
 
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
@@ -211,7 +211,7 @@ class TMDBService
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
 
-        $cacheKey = "now_playing_{$selectedLanguage}_{$streamingService}_{$page}";
+        $cacheKey = "now_playing_" . $selectedLanguage . "_" . $streamingService . "_" . $page;
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
@@ -266,7 +266,7 @@ class TMDBService
      */
     public function getMovieDetails(int $movieId): array
     {
-        $cacheKey = "movie_details_{$movieId}";
+        $cacheKey = "movie_details_" . $movieId;
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
@@ -289,7 +289,7 @@ class TMDBService
      */
     public function getMovieVideos(int $movieId): array
     {
-        $cacheKey = "movie_videos_{$movieId}";
+        $cacheKey = "movie_videos_" . $movieId;
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
@@ -366,7 +366,7 @@ class TMDBService
      */
     public function getDirectorMovies(int $directorId, int $excludeMovieId = null, int $limit = 10): array
     {
-        $cacheKey = "director_movies_{$directorId}_{$excludeMovieId}_{$limit}";
+        $cacheKey = "director_movies_" . $directorId . "_" . $excludeMovieId . "_" . $limit;
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
