@@ -35,8 +35,7 @@ COPY --from=node_builder /app/public/build/manifest.json /var/www/html/public/bu
 RUN composer install --no-dev --optimize-autoloader \
     && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache \
-    && php artisan config:clear
+    && chmod -R 775 storage bootstrap/cache
 
 # mod_rewrite を有効化（ルーティング用）
 RUN a2enmod rewrite
