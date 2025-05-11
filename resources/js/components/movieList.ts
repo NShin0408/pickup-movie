@@ -97,7 +97,8 @@ export class MovieList {
         img.src = `https://image.tmdb.org/t/p/w342${movie.poster_path}`;
         img.alt = movie.title;
         img.className = 'w-full aspect-poster object-cover rounded-lg shadow-movie-poster';
-        img.loading = 'lazy';
+        const existingItems = movieGrid.querySelectorAll('.movie-item').length;
+        img.loading = existingItems < 20 ? 'eager' : 'lazy';
 
         const overlay = document.createElement('div');
         overlay.className = 'movie-title-overlay';
