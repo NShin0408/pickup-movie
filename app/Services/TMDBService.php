@@ -67,7 +67,7 @@ class TMDBService
     private function setCache(string $key, mixed $value): void
     {
         logger()->info("Set cache for key: $key");
-        cache()->put($key, $value, 43200); // 12時間キャッシュ
+        cache()->put($key, $value, 86400); // 24時間キャッシュ
     }
 
     /**

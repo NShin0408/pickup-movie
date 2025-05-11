@@ -23,25 +23,36 @@ class CacheMovies extends Command
     {
         $categories = $this->tmdbService::$categories;
         $languages = array_keys($this->tmdbService::$languages);
-        $streamingServices = array_keys($this->tmdbService::$streamingServices);
+        $allowedServiceNames = ['すべてのサービス', 'U-NEXT', 'Amazon Prime Video', 'Netflix'];
 
         foreach ($categories as $category) {
             foreach ($languages as $language) {
-                foreach ($streamingServices as $streamingService) {
+                foreach ($this->tmdbService::$streamingServices as $streamingServiceId => $streamingServiceName) {
+                    if (!in_array($streamingServiceName, $allowedServiceNames, true)) {
+                        continue;
+                    }
+
                     for ($page = 1; $page <= 3; $page++) {
                         $this->info("Caching $category, language: $language, page: $page");
 
+                        $result = [];
                         // 各カテゴリに対応するメソッドを呼ぶ
                         switch ($category) {
                             case 'popular':
-                                $this->tmdbService->getPopularMovies($language, $streamingService, $page, true);
+                                $result = $this->tmdbService->getPopularMovies($language, $streamingServiceId, $page, true);
                                 break;
                             case 'top_rated':
-                                $this->tmdbService->getTopRatedMovies($language, $streamingService, $page, true);
+                                $result = $this->tmdbService->getTopRatedMovies($language, $streamingServiceId, $page, true);
                                 break;
                             case 'now_playing':
-                                $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page, true);
+                                $result = $this->tmdbService->getNowPlayingMovies($language, $streamingServiceId, $page, true);
                                 break;
+                        }
+
+                        // 20件未満ならループを抜ける
+                        if (count($result) < 20) {
+                            $this->info("No results. Breaking out of page loop.");
+                            break;
                         }
                     }
                 }
