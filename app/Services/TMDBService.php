@@ -11,6 +11,12 @@ class TMDBService
     protected string $defaultLanguage = 'ja-JP'; // デフォルト表示言語
     protected string $defaultRegion = 'JP'; // 日本のリージョンコード
 
+    public static array $categories = [
+        'popular',
+        'top_rated',
+        'now_playing'
+    ];
+
     // 言語選択オプションの定義（ISO 639-1 + ISO 3166-1）
     public static array $languages = [
         'all' => 'すべての言語',

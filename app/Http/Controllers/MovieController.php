@@ -27,21 +27,7 @@ class MovieController extends Controller
         $language = $request->query('language', 'all');
         $streamingService = $request->query('streaming', 'all');
 
-        $allowedCategories = ['popular', 'top_rated', 'now_playing'];
-        $allowedLanguages = array_keys(TMDBService::$languages);
-        $allowedStreamings = array_keys(TMDBService::$streamingServices);
-
-        if (!in_array($category, $allowedCategories)) {
-            abort(400, 'Invalid category');
-        }
-
-        if ($language !== 'all' && !in_array($language, $allowedLanguages)) {
-            abort(400, 'Invalid language');
-        }
-
-        if ($streamingService !== 'all' && !in_array($streamingService, $allowedStreamings)) {
-            abort(400, 'Invalid streaming service');
-        }
+        $this->validateParams($category, $language, $streamingService);
 
         $movies = $this->getMoviesByCategory($category, $language, $streamingService);
 
@@ -65,21 +51,7 @@ class MovieController extends Controller
         $streamingService = $request->query('streaming', 'all');
         $page = (int)$request->query('page', 2); // デフォルトは2ページ目から
 
-        $allowedCategories = ['popular', 'top_rated', 'now_playing'];
-        $allowedLanguages = array_keys(TMDBService::$languages);
-        $allowedStreamings = array_keys(TMDBService::$streamingServices);
-
-        if (!in_array($category, $allowedCategories)) {
-            abort(400, 'Invalid category');
-        }
-
-        if ($language !== 'all' && !in_array($language, $allowedLanguages)) {
-            abort(400, 'Invalid language');
-        }
-
-        if ($streamingService !== 'all' && !in_array($streamingService, $allowedStreamings)) {
-            abort(400, 'Invalid streaming service');
-        }
+        $this->validateParams($category, $language, $streamingService);
 
         $movies = $this->getMoviesByCategory($category, $language, $streamingService, $page);
 
@@ -130,5 +102,24 @@ class MovieController extends Controller
             'now_playing' => $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page),
             default => $this->tmdbService->getPopularMovies($language, $streamingService, $page),
         };
+    }
+
+    private function validateParams(string $category, string $language, string $streamingService): void
+    {
+        $allowedCategories = TMDBService::$categories;
+        $allowedLanguages = array_keys(TMDBService::$languages);
+        $allowedStreamings = array_keys(TMDBService::$streamingServices);
+
+        if (!in_array($category, $allowedCategories)) {
+            abort(400, 'Invalid category');
+        }
+
+        if ($language !== 'all' && !in_array($language, $allowedLanguages)) {
+            abort(400, 'Invalid language');
+        }
+
+        if ($streamingService !== 'all' && !in_array($streamingService, $allowedStreamings)) {
+            abort(400, 'Invalid streaming service');
+        }
     }
 }
