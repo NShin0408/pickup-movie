@@ -112,7 +112,7 @@
                                     src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
                                     alt="{{ $movie['title'] }}"
                                     class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
-                                    loading="lazy"
+                                    loading="eager"
                                 >
                                 <div class="movie-title-overlay">
                                     {{ $movie['title'] }}
