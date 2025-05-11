@@ -93,17 +93,25 @@ export class MovieList {
         div.className = 'relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item';
         div.setAttribute('data-id', movie.id.toString());
 
+        const picture = document.createElement('picture');
+        const source = document.createElement('source');
+        source.media = '(max-width: 640px)';
+        source.srcset = `https://image.tmdb.org/t/p/w185${movie.poster_path}`;
+
         const img = document.createElement('img');
         img.src = `https://image.tmdb.org/t/p/w342${movie.poster_path}`;
         img.alt = movie.title;
         img.className = 'w-full aspect-poster object-cover rounded-lg shadow-movie-poster';
         img.loading = 'lazy';
 
+        picture.appendChild(source);
+        picture.appendChild(img);
+
         const overlay = document.createElement('div');
         overlay.className = 'movie-title-overlay';
         overlay.textContent = movie.title;
 
-        div.appendChild(img);
+        div.appendChild(picture);
         div.appendChild(overlay);
 
         movieGrid.appendChild(div);

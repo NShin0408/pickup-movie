@@ -108,12 +108,17 @@
                     @foreach ($movies as $movie)
                         @if($movie['poster_path'])
                             <div class="relative transition-transform duration-200 cursor-pointer hover:scale-105 movie-item" data-id="{{ $movie['id'] }}">
-                                <img
-                                    src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
-                                    alt="{{ $movie['title'] }}"
-                                    class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
-                                    loading="eager"
-                                >
+                                <picture>
+                                    <source
+                                        media="(max-width: 640px)"
+                                        srcset="https://image.tmdb.org/t/p/w185{{ $movie['poster_path'] }}">
+                                    <img
+                                        src="https://image.tmdb.org/t/p/w342{{ $movie['poster_path'] }}"
+                                        alt="{{ $movie['title'] }}"
+                                        class="w-full aspect-poster object-cover rounded-lg shadow-movie-poster"
+                                        loading="eager"
+                                    >
+                                </picture>
                                 <div class="movie-title-overlay">
                                     {{ $movie['title'] }}
                                 </div>
