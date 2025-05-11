@@ -49,6 +49,9 @@ class CacheMovies extends Command
                                 break;
                         }
 
+                        // --- ここにsleepを追加 ---
+                        usleep(150_000); // 0.15秒（0.1秒=100_000マイクロ秒）
+
                         // 20件未満ならループを抜ける
                         if (count($result) < 20) {
                             $this->info("No results. Breaking out of page loop.");
