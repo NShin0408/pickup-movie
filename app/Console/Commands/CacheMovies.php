@@ -23,15 +23,10 @@ class CacheMovies extends Command
     {
         $categories = $this->tmdbService::$categories;
         $languages = array_keys($this->tmdbService::$languages);
-        $allowedServiceNames = ['すべてのサービス', 'U-NEXT', 'Amazon Prime Video', 'Netflix'];
 
         foreach ($categories as $category) {
             foreach ($languages as $language) {
                 foreach ($this->tmdbService::$streamingServices as $streamingServiceId => $streamingServiceName) {
-                    if (!in_array($streamingServiceName, $allowedServiceNames, true)) {
-                        continue;
-                    }
-
                     for ($page = 1; $page <= 3; $page++) {
                         $this->info("Caching $category, language: $language, page: $page");
 
