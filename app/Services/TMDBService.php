@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 
 class TMDBService
 {
-    protected string $apiKey;
+    protected ?string $apiKey;
     protected string $baseUrl = 'https://api.themoviedb.org/3';
     protected string $defaultLanguage = 'ja-JP'; // デフォルト表示言語
     protected string $defaultRegion = 'JP'; // 日本のリージョンコード
