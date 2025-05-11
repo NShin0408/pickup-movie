@@ -23,24 +23,26 @@ class CacheMovies extends Command
     {
         $categories = $this->tmdbService::$categories;
         $languages = array_keys($this->tmdbService::$languages);
-        $streamingService = 'all'; // 配信サービスをキャッシュに含めるならここもループにできます
+        $streamingServices = array_keys($this->tmdbService::$streamingServices);
 
         foreach ($categories as $category) {
             foreach ($languages as $language) {
-                for ($page = 1; $page <= 3; $page++) {
-                    $this->info("Caching $category, language: $language, page: $page");
+                foreach ($streamingServices as $streamingService) {
+                    for ($page = 1; $page <= 3; $page++) {
+                        $this->info("Caching $category, language: $language, page: $page");
 
-                    // 各カテゴリに対応するメソッドを呼ぶ
-                    switch ($category) {
-                        case 'popular':
-                            $this->tmdbService->getPopularMovies($language, $streamingService, $page, true);
-                            break;
-                        case 'top_rated':
-                            $this->tmdbService->getTopRatedMovies($language, $streamingService, $page, true);
-                            break;
-                        case 'now_playing':
-                            $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page, true);
-                            break;
+                        // 各カテゴリに対応するメソッドを呼ぶ
+                        switch ($category) {
+                            case 'popular':
+                                $this->tmdbService->getPopularMovies($language, $streamingService, $page, true);
+                                break;
+                            case 'top_rated':
+                                $this->tmdbService->getTopRatedMovies($language, $streamingService, $page, true);
+                                break;
+                            case 'now_playing':
+                                $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page, true);
+                                break;
+                        }
                     }
                 }
             }
