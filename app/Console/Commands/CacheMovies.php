@@ -33,13 +33,13 @@ class CacheMovies extends Command
                     // 各カテゴリに対応するメソッドを呼ぶ
                     switch ($category) {
                         case 'popular':
-                            $this->tmdbService->getPopularMovies($language, $streamingService, $page);
+                            $this->tmdbService->getPopularMovies($language, $streamingService, $page, true);
                             break;
                         case 'top_rated':
-                            $this->tmdbService->getTopRatedMovies($language, $streamingService, $page);
+                            $this->tmdbService->getTopRatedMovies($language, $streamingService, $page, true);
                             break;
                         case 'now_playing':
-                            $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page);
+                            $this->tmdbService->getNowPlayingMovies($language, $streamingService, $page, true);
                             break;
                     }
                 }

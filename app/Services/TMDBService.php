@@ -64,10 +64,10 @@ class TMDBService
         return null;
     }
 
-    private function setCache(string $key, mixed $value): void // デフォルト6時間
+    private function setCache(string $key, mixed $value): void
     {
         logger()->info("Set cache for key: $key");
-        cache()->put($key, $value, 21600);
+        cache()->put($key, $value, 43200); // 12時間キャッシュ
     }
 
     /**
@@ -163,12 +163,16 @@ class TMDBService
     /**
      * 人気映画を取得
      */
-    public function getPopularMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
+    public function getPopularMovies(string $selectedLanguage, string $streamingService, int $page = 1, bool $forceRefresh = false): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
         $cacheKey = "popular_" . $selectedLanguage . "_" . $streamingService . "_" . $page;
 
-        logger()->info("Trying cache key: $cacheKey");
+        // 強制リフレッシュ時はキャッシュ削除
+        if ($forceRefresh) {
+            cache()->forget($cacheKey);
+        }
+
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
@@ -185,10 +189,15 @@ class TMDBService
     /**
      * 高評価映画を取得
      */
-    public function getTopRatedMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
+    public function getTopRatedMovies(string $selectedLanguage, string $streamingService, int $page = 1, bool $forceRefresh = false): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
         $cacheKey = "top_rated_" . $selectedLanguage . "_" . $streamingService . "_" . $page;
+
+        // 強制リフレッシュ時はキャッシュ削除
+        if ($forceRefresh) {
+            cache()->forget($cacheKey);
+        }
 
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
@@ -207,11 +216,16 @@ class TMDBService
     /**
      * 上映中の映画を取得
      */
-    public function getNowPlayingMovies(string $selectedLanguage, string $streamingService, int $page = 1): array
+    public function getNowPlayingMovies(string $selectedLanguage, string $streamingService, int $page = 1, bool $forceRefresh = false): array
     {
         $langParams = $this->getLanguageParams($selectedLanguage);
-
         $cacheKey = "now_playing_" . $selectedLanguage . "_" . $streamingService . "_" . $page;
+
+        // 強制リフレッシュ時はキャッシュ削除
+        if ($forceRefresh) {
+            cache()->forget($cacheKey);
+        }
+
         $cached = $this->getCache($cacheKey);
         if ($cached !== null) {
             return $cached;
